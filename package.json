@@ -1,0 +1,8 @@
+{
+    "name": "celery_test",
+    "devDependencies": {
+        "coffee-script": "",
+        "grunt": "",
+        "grunt-contrib-coffee": ""
+    }
+}
