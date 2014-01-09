@@ -17,26 +17,46 @@ APPEND_SLASH=False
 
 MANAGERS = ADMINS
 
+TWITTER_CONSUMER_KEY = 'NvIRx26RzQ28JDZNtcuA'
+TWITTER_CONSUMER_SECRET = 'ELDww8jTvIA5NV9ztFeau55m8AhV9C9iFF7fnWOFD9Q'
+TWITTER_ACCESS_TOKEN_KEY = '2278792177-AxbdKG4xlFyThPkghFYJF9y4yG1SfAJ8dJ6B9PE'
+TWITTER_ACCESS_TOKEN_SECRET = 'p2qCKJQTqgZJrLY6CYndmKSoambILsDhcXJ1wICqVcct1'
+
 import djcelery
 djcelery.setup_loader()
 
-# CELERYBEAT_SCHEDULER="djcelery.schedulers.DatabaseScheduler"
-# CELERY_ALWAYS_EAGER=False
-# BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
+# import twitter
+# TWITTER_API = twitter.Api(consumer_key=TWITTER_CONSUMER_KEY, consumer_secret=TWITTER_CONSUMER_SECRET, access_token_key=TWITTER_ACCESS_TOKEN_KEY, access_token_secret=TWITTER_ACCESS_TOKEN_SECRET)
+
+
+CELERYBEAT_SCHEDULER="djcelery.schedulers.DatabaseScheduler"
+CELERY_ALWAYS_EAGER=False
+BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
 
 #BROKER_URL = 'amqp://walrus:0108@localhost:5672//'
-BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+# BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+CELERY_ENABLE_UTC = False
+CELERY_TIMEZONE = 'Europe/Kiev'
+# CELERY_IMPORTS = ("tasks",)
+
+FACEBOOK_APP_ID = '1476093182617620'
+FACEBOOK_APP_SECRET = 'e860b4c7ce963989c6f6c5817f8ce455'
+
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'celery_test',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
-        'USER': 'root',
+        'USER': 'django',
         'PASSWORD': '0108',
         'HOST': 'localhost',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '3306',                      # Set to empty string for default.
+        'PORT': '',                      # Set to empty string for default.
+        # 'OPTIONS': {
+        #     "init_command": "SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;"
+        # }
     }
 }
 
@@ -48,7 +68,7 @@ ALLOWED_HOSTS = []
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Europe/Kiev'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -56,7 +76,7 @@ LANGUAGE_CODE = 'en-us'
 
 SITE_ID = 1
 
-# If you set this to False, Django will make some optimizations so as not
+# If you set this to False, Django will memoryviewake some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
 
@@ -65,7 +85,7 @@ USE_I18N = True
 USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
-USE_TZ = True
+#USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
@@ -149,13 +169,18 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'djcelery',
     'djkombu',
-    'progress',
+    # 'progress',
     'south',
     'rest_framework',
     'celery_test.api',
-    'djangobower',
-    'grunt',
+    # 'djangobower',
+    # 'grunt',
     'djangular',
+    'django_facebook',
+    'django_nose',
+    #'timedelta',
+    'tweets',
+    'debug_toolbar',
 )
 
 BOWER_INSTALLED_APPS = (
@@ -166,6 +191,27 @@ BOWER_INSTALLED_APPS = (
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
+
+AUTHENTICATION_BACKENDS = (
+    'django_facebook.auth_backends.FacebookBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.core.context_processors.request',
+    'django.contrib.messages.context_processors.messages',
+    'django_facebook.context_processors.facebook',
+)
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+AUTH_USER_MODEL = 'django_facebook.FacebookCustomUser'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
