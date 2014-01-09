@@ -13,7 +13,7 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
-APPEND_SLASH=False
+APPEND_SLASH = False
 
 MANAGERS = ADMINS
 
@@ -29,8 +29,8 @@ djcelery.setup_loader()
 # TWITTER_API = twitter.Api(consumer_key=TWITTER_CONSUMER_KEY, consumer_secret=TWITTER_CONSUMER_SECRET, access_token_key=TWITTER_ACCESS_TOKEN_KEY, access_token_secret=TWITTER_ACCESS_TOKEN_SECRET)
 
 
-CELERYBEAT_SCHEDULER="djcelery.schedulers.DatabaseScheduler"
-CELERY_ALWAYS_EAGER=False
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+CELERY_ALWAYS_EAGER = False
 BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
 
 #BROKER_URL = 'amqp://walrus:0108@localhost:5672//'
@@ -47,12 +47,16 @@ FACEBOOK_APP_SECRET = 'e860b4c7ce963989c6f6c5817f8ce455'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'celery_test',                      # Or path to database file if using sqlite3.
+        # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        # Or path to database file if using sqlite3.
+        'NAME': 'celery_test',
         # The following settings are not used with sqlite3:
         'USER': 'django',
         'PASSWORD': '0108',
-        'HOST': 'localhost',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        # Empty for localhost through domain sockets or '127.0.0.1' for
+        # localhost through TCP.
+        'HOST': 'localhost',
         'PORT': '',                      # Set to empty string for default.
         # 'OPTIONS': {
         #     "init_command": "SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;"
@@ -111,7 +115,8 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.normpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'assets')),
+    os.path.normpath(
+        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'assets')),
 )
 
 # List of finder classes that know how to find static files in
@@ -119,7 +124,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
     'djangobower.finders.BowerFinder',
 )
 
@@ -130,7 +135,7 @@ SECRET_KEY = 'hku+td+=xm=!0d%(9=14cxyv6d+vv6kdtqccn!cqmo%9bei+ej'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    #     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
