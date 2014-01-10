@@ -41,7 +41,6 @@ class Tweet(models.Model):
     status = models.CharField(max_length=140)
     username = models.CharField(
         max_length=140, default='vladboyyko', editable=False)
-    already_posted = models.BooleanField(default=False)
 
     def __unicode__(self):
         return "'%s' by %s" % (self.status, self.username)
@@ -55,7 +54,7 @@ class PostTweetSet(models.Model):
     def next_tweet(self):
         try:
             nt = self.tweets.filter(
-                tweet__already_posted=False).order_by('priority')[0]
+                already_posted=False).order_by('priority')[0]
         except IndexError:
             nt = None
         return nt
@@ -87,6 +86,7 @@ class PeriodicTweet(models.Model):
     tweetset = models.ForeignKey(PostTweetSet, related_name='tweets')
     tweet = models.ForeignKey(Tweet)
     priority = models.IntegerField()
+    already_posted = models.BooleanField(default=False)
 
     def __unicode__(self):
         return '%s' % (self.tweet,)

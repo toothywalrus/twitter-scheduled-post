@@ -28,11 +28,15 @@ class BaseTwitterTask(Task):
 
 @task(base=BaseTwitterTask)
 def tweet(tweet_pk):
-    from .models import Tweet
-    tweet_to_post = Tweet.objects.get(pk=tweet_pk)
-    tweet_to_post.already_posted = True
-    tweet.api.PostUpdate(tweet_to_post.status)
-    tweet_to_post.save()
+    from .models import PeriodicTweet
+    tweet_to_post = PeriodicTweet.objects.get(pk=tweet_pk)
+    try:
+        tweet.api.PostUpdate(tweet_to_post.tweet.status)
+        tweet_to_post.already_posted = True
+        tweet_to_post.save()
+    except twitter.TwitterError:
+        print "error, this tweet will be deleted"
+        tweet_to_post.delete()
 
 
 @task
@@ -52,4 +56,3 @@ def start_tweet_set(tweetset_pk, period, every):
     task = TaskScheduler.create('tweets.tasks.post_next_tweet', period, every,
                                 args="[" + '"%s"' % str(tweetset_pk) + "]")
     task.start()
-    print task.enabled
