@@ -1,7 +1,9 @@
 from datetime import datetime
-from django.db import models
 
-from djcelery.models import PeriodicTask, IntervalSchedule
+from django.db import models
+from django.db.models import signals
+
+from djcelery.models import PeriodicTask, PeriodicTasks, IntervalSchedule
 
 from .tasks import tweet, start_tweet_set
 
@@ -32,6 +34,8 @@ class TaskScheduler(PeriodicTask):
         self.stop()
         self.delete()
 
+signals.pre_save.connect(PeriodicTasks.changed, sender=TaskScheduler)
+
 
 class Tweet(models.Model):
     status = models.CharField(max_length=140)
@@ -50,10 +54,11 @@ class PostTweetSet(models.Model):
 
     def next_tweet(self):
         try:
-            return self.tweets.filter(tweet__already_posted=False).\
-                order_by('priority')[0]
-        except Tweet.DoesNotExist:
-            pass
+            nt = self.tweets.filter(
+                tweet__already_posted=False).order_by('priority')[0]
+        except IndexError:
+            nt = None
+        return nt
 
     def save(self, *args, **kwargs):
         super(PostTweetSet, self).save(*args, **kwargs)

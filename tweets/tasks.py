@@ -1,17 +1,38 @@
-from celery import task
-# from .models import Period, PeriodTweet, TimeTweet
+from django.conf import settings
 
-#api = settings.TWITTER_API
-api = None
+from celery import task, Task
+
+import twitter
 
 
-@task
+def get_api(consumer_key=settings.TWITTER_CONSUMER_KEY,
+            consumer_secret=settings.TWITTER_CONSUMER_SECRET,
+            access_token_key=settings.TWITTER_ACCESS_TOKEN_KEY,
+            access_token_secret=settings.TWITTER_ACCESS_TOKEN_SECRET):
+    api = twitter.Api(
+        consumer_key, consumer_secret, access_token_key, access_token_secret)
+    return api
+
+
+class BaseTwitterTask(Task):
+    abstract = True
+
+    _api = None
+
+    @property
+    def api(self):
+        if self._api is None:
+            self._api = get_api()
+        return self._api
+
+
+@task(base=BaseTwitterTask)
 def tweet(tweet_pk):
     from .models import Tweet
-    tweet = Tweet.objects.get(pk=tweet_pk)
-    tweet.already_posted = True
-    api.PostUpdate(tweet.status)
-    tweet.save()
+    tweet_to_post = Tweet.objects.get(pk=tweet_pk)
+    tweet_to_post.already_posted = True
+    tweet.api.PostUpdate(tweet_to_post.status)
+    tweet_to_post.save()
 
 
 @task
@@ -19,7 +40,7 @@ def post_next_tweet(tweetset_pk):
     from .models import PostTweetSet
     s = PostTweetSet.objects.get(pk=tweetset_pk)
     next_tweet = s.next_tweet()
-    if next_tweet:
+    if next_tweet is not None:
         tweet.delay(next_tweet.pk)
     else:
         print "nothing to post"
