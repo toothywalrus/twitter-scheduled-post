@@ -26,19 +26,6 @@ class BaseTwitterTask(Task):
         return self._api
 
 
-# @task(base=BaseTwitterTask)
-# def tweet(tweet_pk):
-#     from .models import PeriodicTweet
-#     tweet_to_post = PeriodicTweet.objects.get(pk=tweet_pk)
-#     try:
-#         tweet.api.PostUpdate(tweet_to_post.tweet.status)
-#         tweet_to_post.already_posted = True
-#         tweet_to_post.save()
-#     except twitter.TwitterError:
-#         print "error, this tweet will be deleted"
-#         tweet_to_post.delete()
-
-
 @task(base=BaseTwitterTask)
 def tweet(tweet_pk):
     from .models import Tweet
