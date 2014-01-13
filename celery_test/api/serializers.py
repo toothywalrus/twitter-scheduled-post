@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import WebPage, Link, Album
+from .models import WebPage, Link
 
 
 class WebPageSerializer(serializers.ModelSerializer):
@@ -17,11 +17,3 @@ class LinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Link
         order_by = 'url'
-
-
-class AlbumSerializer(serializers.ModelSerializer):
-    #tracks = serializers.RelatedField(many=True)
-
-    class Meta:
-        model = Album
-        fields = ('album_name', 'artist', 'tracks',)

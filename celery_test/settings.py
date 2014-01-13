@@ -25,9 +25,6 @@ TWITTER_ACCESS_TOKEN_SECRET = 'p2qCKJQTqgZJrLY6CYndmKSoambILsDhcXJ1wICqVcct1'
 import djcelery
 djcelery.setup_loader()
 
-# import twitter
-# TWITTER_API = twitter.Api(consumer_key=TWITTER_CONSUMER_KEY, consumer_secret=TWITTER_CONSUMER_SECRET, access_token_key=TWITTER_ACCESS_TOKEN_KEY, access_token_secret=TWITTER_ACCESS_TOKEN_SECRET)
-
 
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 CELERY_ALWAYS_EAGER = False
@@ -116,7 +113,8 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.normpath(
-        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'assets')),
+        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static')),
+    # os.path.join(PROJECT_ROOT, "statis"),
 )
 
 # List of finder classes that know how to find static files in
@@ -125,7 +123,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-    'djangobower.finders.BowerFinder',
+    #'djangobower.finders.BowerFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -177,7 +175,7 @@ INSTALLED_APPS = (
     # 'progress',
     'south',
     'rest_framework',
-    'celery_test.api',
+    'celery_test',
     # 'djangobower',
     # 'grunt',
     'djangular',

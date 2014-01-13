@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="padded-content">
+        <div id="main-content" class="container">
+            <div class="row">
+                <div class="span12">
+                    <div class="pending-bg" pending-bar>
+                        <div class="alert alert-warning">loading ...</div>
+                    </div>
+                </div>
+             </div>
+                <ng-view view-state></ng-view>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-3">
+            <h4>Add new tweet:</h4>
+            <form class="form-inline">
+                <div class="form-group block-level">
+                    <input type="text" class="form-control" ng-model="newStatus" placeholder="Status">
+                </div>
+                <div class="form-group block-level">
+                    <button class="btn btn-default" ng-click="addTweet()">Add Tweet</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-9">
+            <h4>Add new timed tweet:</h4>
+            <form class="form-inline">
+                <div class="form-group block-level">
+                    <select class="form-control" ng-model="newTimedTweet.tweet" ng-options="t.status for t in tweets"></select>
+                </div>
+                <div class="form-group block-level">
+                    <datetimepicker ng-model="newTimedTweet.post_time" datetimepicker-config="{ minuteStep: 1}"></datetimepicker>
+                </div>
+                <div class="form-group block-level">
+                    <button class="btn btn-default" ng-click="addTimedTweet()">Add Timed Tweet</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <ul>
+        <li ng-repeat="tweet in tweets">
+            {[{ tweet.status }]} by <strong><i>{[{ tweet.username }]}</i></strong>
+            <button class="btn btn-success btn-xs" ng-click="deleteTweet(tweet)">Delete</button>
+        </li>
+    </ul>
+
+    <ul>
+        <li ng-repeat="tweet in timedTweets">
+            {[{ tweet.tweet.status }]} by <strong><i>{[{ tweet.tweet.username }]}</i></strong> at {[{ tweet.post_time | date:'yyyy MMMM dd HH:mm' }]}
+        </li>
+    </ul>
+
+{% endblock %}

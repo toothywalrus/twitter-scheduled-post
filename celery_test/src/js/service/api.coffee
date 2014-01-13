@@ -7,3 +7,7 @@ app.factory 'Link', ['$resource', ($resource) ->
 app.factory 'WebPage', ['$resource', ($resource) ->
 	$resource '/api/webpages/:id', id: '@id'
 ]
+
+app.factory 'Tweet', ['$resource', ($resource) ->
+    $resource '/tweet_api/tweets/:id', id: '@id'
+]

@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from celery import task, Task
+from celery import task, Task, chain
 
 import twitter
 
@@ -26,17 +26,36 @@ class BaseTwitterTask(Task):
         return self._api
 
 
+# @task(base=BaseTwitterTask)
+# def tweet(tweet_pk):
+#     from .models import PeriodicTweet
+#     tweet_to_post = PeriodicTweet.objects.get(pk=tweet_pk)
+#     try:
+#         tweet.api.PostUpdate(tweet_to_post.tweet.status)
+#         tweet_to_post.already_posted = True
+#         tweet_to_post.save()
+#     except twitter.TwitterError:
+#         print "error, this tweet will be deleted"
+#         tweet_to_post.delete()
+
+
 @task(base=BaseTwitterTask)
 def tweet(tweet_pk):
-    from .models import PeriodicTweet
-    tweet_to_post = PeriodicTweet.objects.get(pk=tweet_pk)
+    from .models import Tweet
+    tweet_to_post = Tweet.objects.get(pk=tweet_pk)
     try:
-        tweet.api.PostUpdate(tweet_to_post.tweet.status)
-        tweet_to_post.already_posted = True
-        tweet_to_post.save()
+        tweet.api.PostUpdate(tweet_to_post.status)
     except twitter.TwitterError:
         print "error, this tweet will be deleted"
         tweet_to_post.delete()
+
+
+@task
+def mark_posted(ptweet_pk):
+    from .models import PeriodicTweet
+    ptweet = PeriodicTweet.objects.get(pk=ptweet_pk)
+    ptweet.already_posted = True
+    ptweet.save()
 
 
 @task
@@ -45,7 +64,8 @@ def post_next_tweet(tweetset_pk):
     s = PostTweetSet.objects.get(pk=tweetset_pk)
     next_tweet = s.next_tweet()
     if next_tweet is not None:
-        tweet.delay(next_tweet.pk)
+        # tweet.delay(next_tweet.pk)
+        chain(tweet.s(next_tweet.tweet.pk), mark_posted(next_tweet.pk))
     else:
         print "nothing to post"
 

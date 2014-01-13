@@ -1,0 +1,41 @@
+{% load staticfiles %}
+
+<html>
+<head>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/libs/bootstrap.min.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/libs/datetimepicker.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
+<style>
+    .photo img {
+        
+        max-width: 150px;
+        vertical-align: top;
+    }
+    
+    .close {
+        
+        padding: 0 10px;
+    }
+</style>
+</head>
+<body ng-app="{% block ng_app %}Posting{% endblock %}">
+    <div class="container">
+        <div class="content ng-cloak" ng-controller="{% block ng_controller %}AppController{% endblock %}">
+        {% block content %}
+        {% endblock %}
+        </div>
+    </div>
+    {% block js %}
+    <script src="{{ STATIC_URL }}js/libs/moment.min.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/angular/angular.min.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/angular/angular-resource.min.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/angular/angular-cookies.min.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/ui-bootstrap-tpls-0.9.0.min.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/datetimepicker.js"></script>
+    <script src="{{ STATIC_URL }}js/app/app.js"></script>
+    <script src="{{ STATIC_URL }}js/app/services/api.js"></script>
+    <script src="{{ STATIC_URL }}js/app/controllers/app.js"></script>
+    <script src="{{ STATIC_URL }}js/app/services/app.js"></script>
+    {% endblock %}
+</body>
+</html>
