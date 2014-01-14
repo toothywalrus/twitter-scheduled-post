@@ -33,9 +33,18 @@
                 <div class="form-group block-level">
                     <select class="form-control" ng-model="newTimedTweet.tweet" ng-options="t.status for t in tweets"></select>
                 </div>
+
                 <div class="form-group block-level">
-                    <datetimepicker ng-model="newTimedTweet.post_time" datetimepicker-config="{ minuteStep: 1}"></datetimepicker>
+
+                    <div class="dropdown">
+                        <a href="" class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="#">Choose datetime</a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                            <datetimepicker ng-model="newTimedTweet.post_time" datetimepicker-config="{ minuteStep: 1, dropdownSelector: '.dropdown-toggle'}"></datetimepicker>
+                        </ul>
+                    </div>
+
                 </div>
+
                 <div class="form-group block-level">
                     <button class="btn btn-default" ng-click="addTimedTweet()">Add Timed Tweet</button>
                 </div>

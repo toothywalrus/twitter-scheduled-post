@@ -32,17 +32,21 @@ def tweet(tweet_pk):
     tweet_to_post = Tweet.objects.get(pk=tweet_pk)
     try:
         tweet.api.PostUpdate(tweet_to_post.status)
+        print tweet_to_post
+        return True
     except twitter.TwitterError:
         print "error, this tweet will be deleted"
         tweet_to_post.delete()
+    return False
 
 
 @task
-def mark_posted(ptweet_pk):
-    from .models import PeriodicTweet
-    ptweet = PeriodicTweet.objects.get(pk=ptweet_pk)
-    ptweet.already_posted = True
-    ptweet.save()
+def mark_posted(is_posted, ptweet_pk):
+    if is_posted:
+        from .models import PeriodicTweet
+        ptweet = PeriodicTweet.objects.get(pk=ptweet_pk)
+        ptweet.already_posted = True
+        ptweet.save()
 
 
 @task
@@ -51,8 +55,8 @@ def post_next_tweet(tweetset_pk):
     s = PostTweetSet.objects.get(pk=tweetset_pk)
     next_tweet = s.next_tweet()
     if next_tweet is not None:
-        # tweet.delay(next_tweet.pk)
-        chain(tweet.s(next_tweet.tweet.pk), mark_posted(next_tweet.pk))
+        chain(tweet.s(next_tweet.tweet.pk),
+              mark_posted.s(next_tweet.pk)).apply_async()
     else:
         print "nothing to post"
 
