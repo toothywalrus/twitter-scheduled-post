@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <deletebtn count="13" />
+    <deletebtn count="11" />
+{% endblock content %}
+
+{% block experiments %}
+
+{% endblock experiments %}
+
+{% block js %}
+    {{ block.super }}
+    <script src="{{ STATIC_URL }}js/app/directives/mySample.js"></script>
+{% endblock js %}

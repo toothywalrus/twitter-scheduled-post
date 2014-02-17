@@ -1,17 +1,8 @@
-from django.conf import settings
-
 from celery import task, Task, chain
 
 import twitter
 
-
-def get_api(consumer_key=settings.TWITTER_CONSUMER_KEY,
-            consumer_secret=settings.TWITTER_CONSUMER_SECRET,
-            access_token_key=settings.TWITTER_ACCESS_TOKEN_KEY,
-            access_token_secret=settings.TWITTER_ACCESS_TOKEN_SECRET):
-    api = twitter.Api(
-        consumer_key, consumer_secret, access_token_key, access_token_secret)
-    return api
+from .utils import get_api
 
 
 class BaseTwitterTask(Task):
@@ -28,11 +19,14 @@ class BaseTwitterTask(Task):
 
 @task(base=BaseTwitterTask)
 def tweet(tweet_pk):
+    """
+    Posts tweet with pk 'tweet_pk'. If everything is ok returns 'True',
+    otherwise deletes tweet model and returns 'False'.
+    """
     from .models import Tweet
     tweet_to_post = Tweet.objects.get(pk=tweet_pk)
     try:
         tweet.api.PostUpdate(tweet_to_post.status)
-        print tweet_to_post
         return True
     except twitter.TwitterError:
         print "error, this tweet will be deleted"
@@ -51,6 +45,10 @@ def mark_posted(is_posted, ptweet_pk):
 
 @task
 def post_next_tweet(tweetset_pk):
+    """
+    Gets next tweet from PostTweetSet with pk 'tweetset_pk' and if it exists
+    tries to post it using 'tweet' task.
+    """
     from .models import PostTweetSet
     s = PostTweetSet.objects.get(pk=tweetset_pk)
     next_tweet = s.next_tweet()
@@ -63,6 +61,9 @@ def post_next_tweet(tweetset_pk):
 
 @task
 def start_tweet_set(tweetset_pk, period, every):
+    """
+    Register PostTweetSet with pk 'tweetset_pk' in MQ using 'TaskScheduler'.
+    """
     from .models import TaskScheduler
     task = TaskScheduler.create('tweets.tasks.post_next_tweet', period, every,
                                 args="[" + '"%s"' % str(tweetset_pk) + "]")

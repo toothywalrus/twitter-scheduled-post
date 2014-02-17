@@ -124,6 +124,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
     #'djangobower.finders.BowerFinder',
+    'compressor.finders.CompressorFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -149,7 +150,18 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'celery_test.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'celery_test.wsgi.application'
+#WSGI_APPLICATION = 'ws4redis.django_runserver.application'
+
+WEBSOCKET_URL = '/ws/'
+
+WS4REDIS_EXPIRE = 3600
+
+ANGULAR_TEMPLATES_DIR = os.path.join(STATICFILES_DIRS[0], 'js/app/views')
+
+ANGULAR_TEMPLATE_TEXT = 'html'
+
+ANGULAR_TEMPLATE_EXCLUDE = ['list.html']
+
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -160,6 +172,10 @@ TEMPLATE_DIRS = (
 BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_ROOT, 'components')
 
 INSTALLED_APPS = (
+    'admin_tools',
+    'admin_tools.theming',
+    'admin_tools.menu',
+    'admin_tools.dashboard',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -172,19 +188,21 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'djcelery',
     'djkombu',
-    # 'progress',
     'south',
     'rest_framework',
     'celery_test',
-    # 'djangobower',
-    # 'grunt',
     'djangular',
-    'django_facebook',
     'django_nose',
-    #'timedelta',
     'tweets',
-    'debug_toolbar',
+    'crispy_forms',
+    'floppyforms',
+    'compressor',
 )
+
+REDIS_SSEQUEUE_CONNECTION_SETTINGS = {
+    'location': 'localhost:6379',
+    'db': 0,
+}
 
 BOWER_INSTALLED_APPS = (
     'angular',
@@ -195,8 +213,15 @@ BOWER_INSTALLED_APPS = (
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
+# SESSION_ENGINE = 'redis_sessions.session'
+
+SOCKJS_CLASSES = (
+    'tweets.pollserver.PollConnection',
+)
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
 AUTHENTICATION_BACKENDS = (
-    'django_facebook.auth_backends.FacebookBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -209,12 +234,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.tz',
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
-    'django_facebook.context_processors.facebook',
 )
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
-AUTH_USER_MODEL = 'django_facebook.FacebookCustomUser'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

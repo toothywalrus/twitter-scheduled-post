@@ -1,0 +1,22 @@
+<div>
+    <a class="pull-left" href="#">
+        <img class="media-object" width="30" height="30">
+    </a>
+    <div class="media-body">
+        <p>
+            <div class="col-md-9">
+                <span>{[{ item.status }]}</span>
+                by <i>{[{ item.username }]}</i>
+                created on <b>{[{ item.created_on }]}</b>    
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-xs btn-info" create-form model-name="timedTweet" parent-id="item.id" parent-type="tweet"></button>
+            </div>
+        </p>
+        <ul class="media-list">
+            <li class="media" ng-repeat="t in item.timedtweets">
+                <div list-item item="t" type="timedtweet"></div>
+            </li>
+        </ul>
+    </div>
+</div>

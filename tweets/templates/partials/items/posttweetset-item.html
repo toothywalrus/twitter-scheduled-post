@@ -1,0 +1,14 @@
+<div>
+    <div>
+        <div class="col-md-9">
+            {[{ item.description }]}
+            <i>Start time: <b>{[{ item.start_time }]}</b></i>
+        </div>
+        <div class="col-md-3">
+            <button class="btn btn-xs btn-info" create-form model-name="periodicTweet" parent-id="item.id" parent-type="tweetset"></button>
+        </div>
+    </div>
+    <ul>
+        <li list-item item="t" type="periodictweet" ng-repeat="t in item.periodictweets"></li>
+    </ul>
+</div>

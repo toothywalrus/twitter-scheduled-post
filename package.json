@@ -1,8 +1,18 @@
 {
-    "name": "celery_test",
-    "devDependencies": {
-        "coffee-script": "",
-        "grunt": "",
-        "grunt-contrib-coffee": ""
-    }
+  "name": "celery_test",
+  "devDependencies": {
+    "coffee-script": "",
+    "grunt": "~0.4.2",
+    "grunt-contrib-coffee": "",
+    "grunt-contrib-uglify": "~0.3.2",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-angular-templates": "~0.5.1"
+  },
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "BSD-2-Clause"
 }
