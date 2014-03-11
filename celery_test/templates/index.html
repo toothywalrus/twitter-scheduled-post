@@ -3,12 +3,15 @@
 {% load experiment %}
 {% block content %}
 
-<button class="btn btn-default btn-danger btn-lg"><span class="glyphicon glyphicon-home"></span></button>
+<!-- <create-form model-name="tweet"></create-form>
+<create-form model-name="postTweetSet"></create-form> -->
 
-    <dashboard>
-        <dashboard-section list="info.tweets" element="tweet"></dashboard-section>>
-        <dashboard-section list="info.postTweetSets" element="posttweetset"></dashboard-section>>
-    </dashboard>
+<datepicker ng-model='date'></datepicker>
+
+<dashboard>
+    <dashboard-section list="info.tweets" element="tweet"></dashboard-section>
+    <dashboard-section list="info.posttweetsets" element="postTweetSet"></dashboard-section>
+</dashboard>
 
 {% endblock %}
 

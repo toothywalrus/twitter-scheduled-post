@@ -10,6 +10,9 @@
 <!-- <link rel="stylesheet" href="{{ STATIC_URL }}css/libs/bootstrap-theme.css"> -->
 <link rel="stylesheet" href="{{ STATIC_URL }}css/libs/datetimepicker.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/libs/bootstrap-glyphicons.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/libs/angular.treeview.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/libs/ng-quick-date.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/libs/ng-quick-date-default-theme.css">
 
 {% if debug %}
 // This is the client-side way to compile less and an ok choice for local dev
@@ -38,7 +41,6 @@
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="{% url 'home' %}">Home</a></li>
-                    <li><a href="{% url 'experiments' %}">Experiments</a></li>
                     <li><a href="/admin/">Admin</a></li>
                     <li><a href="{% url 'info' %}">Info</a></li>
                 </ul>
@@ -76,17 +78,16 @@
     <script src="{{ STATIC_URL }}js/libs/restangular.min.js"></script>
     <script src="{{ STATIC_URL }}js/libs/bootstrap.min.js"></script>
     <script src="{{ STATIC_URL }}js/libs/ui-bootstrap-tpls-0.9.0.min.js"></script>
-    <script src="{{ STATIC_URL }}js/libs/datetimepicker.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/ng-quick-date.min.js"></script>
     <script src="{{ STATIC_URL }}js/app/app.js"></script>
     <script src="{{ STATIC_URL }}js/app/controllers/app.js"></script>
     <script src="{{ STATIC_URL }}js/app/controllers/info.js"></script>
     <script src="{{ STATIC_URL }}js/app/services/app.js"></script>
-    <script src="{{ STATIC_URL }}js/app/directives/deleteButton.js"></script>
     <script src="{{ STATIC_URL }}js/app/directives/listItem.js"></script>
     <script src="{{ STATIC_URL }}js/app/directives/dashboardSection.js"></script>
     <script src="{{ STATIC_URL }}js/app/directives/dashboard.js"></script>
     <script src="{{ STATIC_URL }}js/app/directives/createForm.js"></script>
-    <script src="{{ STATIC_URL }}js/libs/angular-round-progress-directive.js"></script>
+    <script src="{{ STATIC_URL }}js/app/directives/removeItem.js"></script>
     {% endblock %}
 
     {% block experiments %}

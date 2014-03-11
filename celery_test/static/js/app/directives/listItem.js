@@ -2,13 +2,13 @@
 
 window.angular.module('Posting').directive('listItem', function($compile, $http, $templateCache) {
     var getTemplate = function(contentType) {
-        var templateUrl = contentType + '-item.html';
+        var templateUrl = contentType.toLowerCase() + '-item.html';
         var templateLoader = $http.get(templateUrl, {cache: $templateCache});
 
         return templateLoader;
     };
 
-    var linker = function(scope, element, attrs, listItemCtrl) {
+    var linker = function(scope, element, attrs) {
         var loader = getTemplate(scope.type);
 
         loader.success(function(html) {
@@ -22,10 +22,12 @@ window.angular.module('Posting').directive('listItem', function($compile, $http,
     };
 
     var ctrl = function($scope) {
+        $scope.deleteItem = function() {
+        };
     };
 
     return {
-        restrict: 'A',
+        restrict: 'EA',
         scope: {
             item: '=',
             type: '@'

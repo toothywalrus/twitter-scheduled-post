@@ -1,9 +1,31 @@
 @import 'less/bootstrap.less';
 
-.something {
-    color: red;
-}
-
 .content {
     margin-top: 70px;
+}
+
+.item {
+    .make-row();
+    .info {
+        .make-md-column(9);
+    }
+    .controls {
+        .make-md-column(3);
+    }
+    .children {
+        .make-row();
+    }
+}
+
+.author {
+    color: green;
+    font-weight: bold;
+}
+
+.dashboard {
+    .make-row();
+}
+
+.dashboard-section {
+    .make-md-column(6);
 }

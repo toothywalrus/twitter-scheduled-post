@@ -28,7 +28,7 @@ def get_resource_name(model_name):
     Returns name for the resource used in Restangular by the 'model_name'.
     Actually is pluralized version of 'model_name'.
     """
-    return "".join([get_model_name(model_name), "s"])
+    return "".join([model_name.lower(), "s"])
 
 
 def get_form_id(form_instance):

@@ -8,4 +8,5 @@ window.angular.module('Posting').controller('AppController', function($scope) {
     $scope.$on('info:stop_load', function() {
         $scope.loading = false;
     });
+    $scope.date = new Date();
 });

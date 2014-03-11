@@ -6,10 +6,10 @@ window.angular.module('Posting').directive('dashboard', function(Restangular) {
         replace: true,
         transclude: true,
         templateUrl: 'dashboard.html',
-        controller: function($scope) {
+        controller: function($scope, Info) {
             $scope.$emit('info:start_load');
-            Restangular.one('info').get().then(function(info) {
-                $scope.info = info;
+            Info.retrieve().then(function() {
+                $scope.info = Info.getAll();
                 $scope.$emit('info:stop_load', {});
             });
         }

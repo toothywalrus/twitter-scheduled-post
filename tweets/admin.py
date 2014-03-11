@@ -4,8 +4,8 @@ from .models import Tweet, TimedTweet, PeriodicTweet, PostTweetSet
 
 
 class TweetAdmin(admin.ModelAdmin):
-    readonly_fields = ('username', )
-    list_display = ('status', 'username', 'created_on',)
+    readonly_fields = ('user', )
+    list_display = ('status', 'user', 'created_on',)
 
 
 class TimedTweetAdmin(admin.ModelAdmin):

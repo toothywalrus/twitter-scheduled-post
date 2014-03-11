@@ -4,6 +4,8 @@ from datetime import datetime
 from django.db import models
 from django.db.models import signals
 
+from django.contrib.auth import get_user_model
+
 from djcelery.models import PeriodicTask, PeriodicTasks, IntervalSchedule
 
 
@@ -63,7 +65,7 @@ signals.pre_save.connect(PeriodicTasks.changed, sender=TaskScheduler)
 
 class Postable(models.Model):
     already_posted = models.BooleanField(default=False)
-    # post_time = models.DateTimeField()
+    # po st_time = models.DateTimeField()
 
     class Meta:
         abstract = True
@@ -75,12 +77,13 @@ class Tweet(models.Model):
     Simple tweet model.
     """
     status = models.TextField(max_length=140)
-    username = models.CharField(
-        max_length=140, default='vladboyyko', editable=False)
+    # username = models.CharField(
+    #     max_length=140, default='vladboyyko', editable=False)
+    user = models.ForeignKey(get_user_model())
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
-        return "'%s' by %s" % (self.status, self.username)
+        return "'%s' by %s" % (self.status, self.user)
 
 
 class PostTweetSet(models.Model):

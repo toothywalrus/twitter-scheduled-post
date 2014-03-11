@@ -24,7 +24,7 @@ def angular_template(*files):
         files = filter(lambda f: os.path.exists(f), files)
     for filepath in files:
         filename = os.path.basename(filepath)
-        if filename not in settings.ANGULAR_TEMPLATE_EXCLUDE:
+        if filename not in settings.ANGUSLAR_TEMPLATE_EXCLUDE:
             with open(filepath) as fh:
                 template = ANGULAR_TPL.format(
                     id=filename,

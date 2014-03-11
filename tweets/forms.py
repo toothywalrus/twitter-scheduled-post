@@ -15,6 +15,10 @@ class DateTimeLocalInput(forms.DateTimeInput):
     input_type = 'datetime-local'
 
 
+class DateTimePicker(forms.DateTimeInput):
+    template_name = 'datetimepicker.html'
+
+
 class StatusInput(forms.Textarea):
     rows = 4
 
@@ -58,7 +62,7 @@ class PostTweetSetForm(FormHelperMixin, NgModelFormMixin, forms.ModelForm):
     class Meta:
         model = PostTweetSet
         widgets = {
-            'start_time': DateTimeLocalInput,
+            'start_time': DateTimePicker,
         }
 
 
