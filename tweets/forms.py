@@ -1,11 +1,12 @@
+from django import forms as django_forms
+
 import floppyforms as forms
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field
 
-
 from djangular.forms.angular_model import NgModelFormMixin
-# from djangular.forms import NgFormValidationMixin
+from djangular.forms import NgFormValidationMixin
 
 from .models import Tweet, PostTweetSet, PeriodicTweet, TimedTweet
 from .utils import get_model_name, get_form_id
@@ -18,19 +19,43 @@ class DateTimeLocalInput(forms.DateTimeInput):
 class DateTimePicker(forms.DateTimeInput):
     template_name = 'datetimepicker.html'
 
+    def get_context_data(self):
+        del self.attrs['placeholder']
+        return super(DateTimePicker, self).get_context_data()
+
 
 class StatusInput(forms.Textarea):
     rows = 4
 
+    def get_context_data(self):
+        self.attrs['style'] = "resize:none"
+        return super(StatusInput, self).get_context_data()
+
+
+class NgSelectInput(forms.Select):
+    template_name = 'ngselectinput.html'
+    items = "info.tweets"
+    value = "id"
+    text = "status"
+    model_name = "tweet"
+
+    def get_context_data(self):
+
+        self.attrs['ng-options'] = "obj.%s as obj.%s for obj in %s" % (
+            self.value, self.text, self.items,)
+        ctx = super(NgSelectInput, self).get_context_data()
+        ctx.update({'model_name': self.model_name})
+        return ctx
+
 
 class TweetHelper(FormHelper):
     form_show_errors = False
-    #form_class = 'form-inline'
+    # form_class = 'form-inline'
     disable_csrf = True
     form_tag = True
     form_show_labels = True
     form_action = '#'
-    #help_text_as_placeholder = True
+    # help_text_as_placeholder = True
 
     def __init__(self, *args, **kwargs):
         super(TweetHelper, self).__init__(*args, **kwargs)
@@ -48,7 +73,8 @@ class FormHelperMixin(object):
         self.helper.form_id = get_form_id(self)
 
 
-class TweetForm(FormHelperMixin, NgModelFormMixin, forms.ModelForm):
+class TweetForm(FormHelperMixin, NgModelFormMixin, NgFormValidationMixin,
+                forms.ModelForm):
 
     class Meta:
         model = Tweet
@@ -57,7 +83,11 @@ class TweetForm(FormHelperMixin, NgModelFormMixin, forms.ModelForm):
         }
 
 
-class PostTweetSetForm(FormHelperMixin, NgModelFormMixin, forms.ModelForm):
+class PostTweetSetForm(
+    FormHelperMixin, NgModelFormMixin, NgFormValidationMixin,
+        forms.ModelForm):
+
+    description = django_forms.CharField(max_length=200, min_length=1)
 
     class Meta:
         model = PostTweetSet
@@ -66,21 +96,24 @@ class PostTweetSetForm(FormHelperMixin, NgModelFormMixin, forms.ModelForm):
         }
 
 
-class PeriodicTweetForm(FormHelperMixin, NgModelFormMixin, forms.ModelForm):
+class PeriodicTweetForm(FormHelperMixin, NgModelFormMixin,
+                        NgFormValidationMixin, forms.ModelForm):
 
     class Meta:
         model = PeriodicTweet
         widgets = {
             'priority': forms.NumberInput,
+            'tweet': NgSelectInput,
         }
         fields = ('already_posted', 'priority', 'tweet', )
 
 
-class TimedTweetForm(FormHelperMixin, NgModelFormMixin, forms.ModelForm):
+class TimedTweetForm(FormHelperMixin, NgModelFormMixin,
+                     NgFormValidationMixin, forms.ModelForm):
 
     class Meta:
         model = TimedTweet
         widgets = {
-            'post_time': DateTimeLocalInput,
+            'post_time': DateTimePicker,
         }
         fields = ('post_time', 'already_posted',)

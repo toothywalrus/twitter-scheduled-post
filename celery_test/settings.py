@@ -145,6 +145,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+
+    'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
 )
 
 ROOT_URLCONF = 'celery_test.urls'
@@ -152,9 +155,6 @@ ROOT_URLCONF = 'celery_test.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 #WSGI_APPLICATION = 'ws4redis.django_runserver.application'
 
-WEBSOCKET_URL = '/ws/'
-
-WS4REDIS_EXPIRE = 3600
 
 ANGULAR_TEMPLATES_DIR = os.path.join(STATICFILES_DIRS[0], 'js/app/views')
 
@@ -190,6 +190,7 @@ INSTALLED_APPS = (
     'djkombu',
     'south',
     'rest_framework',
+    'rest_framework.authtoken',
     'celery_test',
     'djangular',
     'django_nose',
@@ -197,6 +198,8 @@ INSTALLED_APPS = (
     'crispy_forms',
     'floppyforms',
     'compressor',
+    'social.apps.django_app.default',
+    'corsheaders',
 )
 
 REDIS_SSEQUEUE_CONNECTION_SETTINGS = {
@@ -234,6 +237,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.tz',
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
+
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
 )
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
@@ -267,3 +273,44 @@ LOGGING = {
         },
     }
 }
+
+AUTHENTICATION_BACKENDS = (
+    'social.backends.google.GoogleOAuth2',
+    'social.backends.twitter.TwitterOAuth',
+    'social.backends.facebook.FacebookOAuth2',
+    'django.contrib.auth.backends.ModelBackend'
+)
+
+ACCOUNT_EMAIL_UNIQUE = True
+ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
+
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+    'social.pipeline.user.get_username',
+    'social.pipeline.social_auth.associate_by_email',
+    'social.pipeline.user.create_user',
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details'
+)
+
+
+CORS_ORIGIN_ALLOW_ALL = True
+#CORS_URLS_REGEX = r'^/api/.*$'
+# CORS_ALLOW_HEADERS = (
+#        'x-requested-with',
+#        'content-type',
+#        'accept',
+#        'origin',
+#        'authorization',
+#        'x-csrftoken',
+#        'x-token'
+#    )
+
+SOCIAL_AUTH_FACEBOOK_KEY = '1476093182617620'
+SOCIAL_AUTH_FACEBOOK_SECRET = 'e860b4c7ce963989c6f6c5817f8ce455'
+SOCIAL_AUTH_FACEBOOK_SCOPE = [
+    'email', 'user_about_me', 'user_birthday', 'user_location']

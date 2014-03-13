@@ -1,0 +1,6 @@
+<select-add model-name="{{ model_name }}">
+    <select {% for key, val in attrs.items %}
+             {{ key }}="{{ val }}"
+           {% endfor %}>
+    </select>
+</select-add>

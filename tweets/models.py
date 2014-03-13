@@ -6,16 +6,21 @@ from django.db.models import signals
 
 from django.contrib.auth import get_user_model
 
+from rest_framework.renderers import UnicodeJSONRenderer
+
 from djcelery.models import PeriodicTask, PeriodicTasks, IntervalSchedule
+
+from django_sse.redisqueue import send_event
 
 
 from .tasks import tweet, start_tweet_set
+import utils
 
 
 class TaskScheduler(PeriodicTask):
 
     """
-    Proxy - model for PeriodicTask model, used to create, destroy and control
+    Proxy-model for PeriodicTask model, used to create, destroy and control
     it. PeriodicTask instance with field 'enabled' set to 'true' gets started
     to execute in Celery, because of the way MQ used by Djangular, Kombu
     works.
@@ -71,14 +76,35 @@ class Postable(models.Model):
         abstract = True
 
 
-class Tweet(models.Model):
+class LiveModel(models.Model):
+
+    def send_event(self, event):
+        data = {}
+        data.update({'item': utils.get_serializer_class(
+            self.__class__.__name__)(instance=self).data})
+        data.update(
+            {'model_name': utils.get_model_name(self.__class__.__name__)})
+        send_event(event, UnicodeJSONRenderer()
+                   .render(data=data), channel="stream")
+
+    def save(self, *args, **kwargs):
+        super(LiveModel, self).save(*args, **kwargs)
+        self.send_event('saved')
+
+    def delete(self, *args, **kwargs):
+        self.send_event('deleted')
+        super(LiveModel, self).delete(*args, **kwargs)
+
+    class Meta:
+        abstract = True
+
+
+class Tweet(LiveModel):
 
     """
     Simple tweet model.
     """
     status = models.TextField(max_length=140)
-    # username = models.CharField(
-    #     max_length=140, default='vladboyyko', editable=False)
     user = models.ForeignKey(get_user_model())
     created_on = models.DateTimeField(auto_now_add=True)
 
@@ -86,7 +112,7 @@ class Tweet(models.Model):
         return "'%s' by %s" % (self.status, self.user)
 
 
-class PostTweetSet(models.Model):
+class PostTweetSet(LiveModel):
 
     """
     Represents some set of tweets which might be
@@ -121,7 +147,7 @@ class PostTweetSet(models.Model):
             (self.description, self.interval, self.start_time)
 
 
-class TimedTweet(Postable):
+class TimedTweet(LiveModel, Postable):
 
     """
     Tweet that needs to be posted at specified time 'post_time'.
@@ -139,7 +165,7 @@ class TimedTweet(Postable):
         tweet.apply_async(args=[self.tweet.pk], eta=self.post_time)
 
 
-class PeriodicTweet(Postable):
+class PeriodicTweet(LiveModel, Postable):
 
     """
     Tweet that belongs to some set of tweets to post every period of time

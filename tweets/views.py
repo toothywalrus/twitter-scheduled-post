@@ -4,6 +4,7 @@ from rest_framework import viewsets, generics, permissions
 from rest_framework.renderers import UnicodeJSONRenderer
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from django_sse.redisqueue import send_event
 
@@ -84,6 +85,8 @@ class InfoView(APIView):
     """
     View for getting bulk of models information at once.
     """
+
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
         info = {get_resource_name(model.__name__):

@@ -14,8 +14,11 @@ window.angular.module('Posting').directive('createForm', function(Restangular, m
 
             var modalInstance = $modal.open({
                 templateUrl: templateUrl,
-                controller: function($scope, $modalInstance) {
+                resolve: {
+                },
+                controller: function($scope, $modalInstance, Info) {
                     $scope[modelName] = {};
+                    $scope.info = Info.getAll();
                     if (parentType) { 
                         $scope[modelName][parentType] = parentId;
                     }
@@ -28,6 +31,7 @@ window.angular.module('Posting').directive('createForm', function(Restangular, m
                 }
             });
             modalInstance.result.then(function(result) {
+                console.log(result);
                 Info.add(modelName, result);
             });
         };
@@ -42,7 +46,6 @@ window.angular.module('Posting').directive('createForm', function(Restangular, m
         replace: true,
         scope: {
             modelName: '@',
-            parentId: '@'
         },
         controller: ctrl,
         link: linker

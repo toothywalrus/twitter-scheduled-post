@@ -26,7 +26,13 @@
 {% endif %}
 
 </head>
-<body ng-app="{% block ng_app %}Posting{% endblock %}">
+<body ng-app="{% block ng_app %}Posting{% endblock %}"auth-application>
+
+    <div id="login-holder">
+    </div>
+    
+    <div id="main">
+
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header">
@@ -57,11 +63,14 @@
         </div>
     </div>
 
+
     <div class="container"> 
         <div class="content ng-cloak" ng-controller="{% block ng_controller %}AppController{% endblock %}">
         {% block content %}
         {% endblock %}
         </div>
+    </div>
+
     </div>
 
     {% block partials %}
@@ -74,20 +83,30 @@
     <script src="{{ STATIC_URL }}js/libs/angular/angular.min.js"></script>
     <script src="{{ STATIC_URL }}js/libs/angular/angular-resource.min.js"></script>
     <script src="{{ STATIC_URL }}js/libs/angular/angular-cookies.min.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/angular/angular-route.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/angular/angular-animate.js"></script>
     <script src="{{ STATIC_URL }}js/libs/underscore-min.js"></script>
     <script src="{{ STATIC_URL }}js/libs/restangular.min.js"></script>
     <script src="{{ STATIC_URL }}js/libs/bootstrap.min.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/ui-bootstrap-custom-0.10.0.min.js"></script>
     <script src="{{ STATIC_URL }}js/libs/ui-bootstrap-tpls-0.9.0.min.js"></script>
-    <script src="{{ STATIC_URL }}js/libs/ng-quick-date.min.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/ng-quick-date.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/angular-ui-router.min.js"></script>
     <script src="{{ STATIC_URL }}js/app/app.js"></script>
     <script src="{{ STATIC_URL }}js/app/controllers/app.js"></script>
     <script src="{{ STATIC_URL }}js/app/controllers/info.js"></script>
     <script src="{{ STATIC_URL }}js/app/services/app.js"></script>
+    <script src="{{ STATIC_URL }}js/app/services/info.js"></script>
+    <script src="{{ STATIC_URL }}js/app/services/streamService.js"></script>
+    <script src="{{ STATIC_URL }}js/app/filters/capitalize.js"></script>
+    <script src="{{ STATIC_URL }}js/app/services/modelRelations.js"></script>
     <script src="{{ STATIC_URL }}js/app/directives/listItem.js"></script>
     <script src="{{ STATIC_URL }}js/app/directives/dashboardSection.js"></script>
     <script src="{{ STATIC_URL }}js/app/directives/dashboard.js"></script>
     <script src="{{ STATIC_URL }}js/app/directives/createForm.js"></script>
     <script src="{{ STATIC_URL }}js/app/directives/removeItem.js"></script>
+    <script src="{{ STATIC_URL }}js/app/directives/alertBar.js"></script>
+    <script src="{{ STATIC_URL }}js/app/directives/selectAdd.js"></script>
     {% endblock %}
 
     {% block experiments %}

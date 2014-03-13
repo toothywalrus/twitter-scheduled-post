@@ -6,7 +6,7 @@
 <!-- <create-form model-name="tweet"></create-form>
 <create-form model-name="postTweetSet"></create-form> -->
 
-<datepicker ng-model='date'></datepicker>
+<!-- <qdatepicker ng-model='date'></qdatepicker> -->
 
 <dashboard>
     <dashboard-section list="info.tweets" element="tweet"></dashboard-section>
@@ -31,6 +31,9 @@
     </script>
     <script type="text/ng-template" id="dashboard.html">
         {% include "partials/dashboard.html" %}
+    </script>
+    <script type="text/ng-template" id="selectAdd.html">
+        {% include "partials/selectAdd.html" %}
     </script>
     <script type="text/ng-template" id="dashboardSection.html">
         {% include "partials/dashboardSection.html" %}

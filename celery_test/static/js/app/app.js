@@ -6,9 +6,18 @@ var Posting = window.angular.module('Posting', ['ui.bootstrap', 'ngCookies', 're
     }
 );
 
-Posting.config(function(RestangularProvider, ngQuickDateDefaultsProvider) {
+Posting.config(function(RestangularProvider) {
     RestangularProvider.setBaseUrl('/tweets');
-    return ngQuickDateDefaultsProvider.set({
+/*    RestangularProvider.addFullRequestInterceptor(function(element, operation, route, url, headers, params) {
+        return {
+            element: element,
+            params: params,
+            headers: _.extend(headers, {Authorization: 'Basic ' + 'sometoken'})
+        };
+    });*/
+
+
+    /*return ngQuickDateDefaultsProvider.set({
         closeButtonHtml: "<i class='fa fa-times'></i>",
         buttonIconHtml: "<i class='fa fa-clock-o'></i>",
         nextLinkHtml: "<i class='fa fa-chevron-right'></i>",
@@ -18,9 +27,21 @@ Posting.config(function(RestangularProvider, ngQuickDateDefaultsProvider) {
           d = Date.create(str);
           return d.isValid() ? d : null;
         }
-    });
+    });*/
 });
 
-Posting.run(function($http, $cookies) {
+Posting.run(function($http, $cookies, $rootScope) {
     $http.defaults.headers.common['X-CSRFToken'] = $cookies['csrftoken'];
+
+/*    var resolveDone = function () { $rootScope.doingResolve = false; };
+ 
+    $rootScope.doingResolve = false;
+ 
+    $rootScope.$on('$stateChangeStart', function () {
+        $rootScope.doingResolve = true;
+    });
+ 
+    $rootScope.$on('$stateChangeSuccess', resolveDone);
+    $rootScope.$on('$stateChangeError', resolveDone);
+    $rootScope.$on('$permissionError', resolveDone);*/
 });
