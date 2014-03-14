@@ -15,14 +15,6 @@ window.angular.module('Posting').directive('createForm', function(Restangular, m
             return ($scope.item) ? $scope.item.id : null;
         }
 
-        function setParentId(modelName) {
-            var parentType = modelRelations.getParent(modelName);
-            var parentId = getParentId();
-            if (parentType) {
-                $scope[modelName][parentType] = parentId;
-            }
-        }
-
         $scope.open = function () {
             var modelName = getModelName();
             var templateUrl = getTemplateName(modelName);
@@ -30,9 +22,18 @@ window.angular.module('Posting').directive('createForm', function(Restangular, m
             var modalInstance = $modal.open({
                 templateUrl: templateUrl,
                 controller: function($scope, $modalInstance, Info) {
+
+                    function setParentId() {
+                        var parentName = modelRelations.getParent(modelName);
+                        var parentId = getParentId();
+                        if (parentName) {
+                            $scope[modelName][parentName] = parentId;
+                        }
+                    }
+
                     $scope[modelName] = {};
                     $scope.info = Info.getAll();
-                    setParentId(modelName);
+                    setParentId();
                     $scope.ok = function () {
                         $modalInstance.close($scope[modelName]);
                     };
