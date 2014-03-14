@@ -25,7 +25,7 @@ class TimedTweetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TimedTweet
-        fields = ('already_posted', 'post_time')
+        fields = ('id', 'already_posted', 'post_time')
 
 
 class TweetSerializer(serializers.ModelSerializer):
@@ -47,7 +47,7 @@ class PeriodicTweetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PeriodicTweet
-        fields = ('already_posted', 'posted_on', 'priority', 'tweet', )
+        fields = ('id', 'already_posted', 'posted_on', 'priority', 'tweet', )
 
     tweet = TweetSerializer(source='tweet')
 

@@ -5,6 +5,7 @@ angular.module('Posting').factory('streamService', function(Info) {
 
     source.addEventListener('saved', function(e) {
         var data = JSON.parse(e.data);
+        console.log(e.data);
         Info.addToInfo(data.model_name, data.item);
     });
 

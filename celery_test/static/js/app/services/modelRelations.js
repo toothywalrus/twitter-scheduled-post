@@ -1,5 +1,6 @@
 angular.module('Posting').factory('modelRelations', function() {
-    return {
+
+    var tree = {
         tweet: {
             child: 'timedTweet',
             parent: null,
@@ -18,4 +19,12 @@ angular.module('Posting').factory('modelRelations', function() {
             parent: 'tweet'
         }
     };
+
+    function getParent(modelName) {
+        var pt = tree[modelName].parent;
+        pt = (pt) ? (tree[pt].name || pt) : (null);
+        return pt;
+    }
+
+    return angular.extend(tree, {getParent: getParent});
 });
