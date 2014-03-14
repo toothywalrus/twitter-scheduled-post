@@ -3,6 +3,16 @@
 angular.module('Posting').factory('streamService', function(Info) {
     var source = new EventSource('/stream/');
 
+    /*function addEvent(name) {
+        source.addEventListener(name, function(e) {
+            listener(e, function)
+        });
+    }
+
+    function listener(e) {
+        var data = JSON.parse(e.data);
+    }*/
+
     source.addEventListener('saved', function(e) {
         var data = JSON.parse(e.data);
         Info.addToInfo(data.model_name, data.item);
@@ -12,6 +22,8 @@ angular.module('Posting').factory('streamService', function(Info) {
         var data = JSON.parse(e.data);
         Info.removeFromInfo(data.model_name, data.item);
     });
+    
+    return {
 
-    return {};
+    };
 });

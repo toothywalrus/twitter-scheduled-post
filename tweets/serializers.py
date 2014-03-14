@@ -22,10 +22,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class TimedTweetSerializer(serializers.ModelSerializer):
+    parent = serializers.PrimaryKeyRelatedField(source='tweet', read_only=True)
 
     class Meta:
         model = TimedTweet
-        fields = ('id', 'already_posted', 'post_time')
+        fields = ('id', 'already_posted', 'post_time', 'parent')
 
 
 class TweetSerializer(serializers.ModelSerializer):
@@ -38,6 +39,8 @@ class TweetSerializer(serializers.ModelSerializer):
 
 
 class PeriodicTweetSerializer(serializers.ModelSerializer):
+    parent = serializers.PrimaryKeyRelatedField(
+        source='tweetset', read_only=True)
 
     class TweetSerializer(serializers.ModelSerializer):
 
@@ -47,7 +50,8 @@ class PeriodicTweetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PeriodicTweet
-        fields = ('id', 'already_posted', 'posted_on', 'priority', 'tweet', )
+        fields = ('id', 'already_posted',
+                  'posted_on', 'priority', 'tweet', 'parent')
 
     tweet = TweetSerializer(source='tweet')
 

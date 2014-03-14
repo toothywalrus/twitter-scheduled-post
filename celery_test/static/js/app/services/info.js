@@ -17,15 +17,13 @@ angular.module('Posting').factory('Info', function(Restangular, modelRelations, 
     }
 
     var addToInfo = function(itemType, item) {
-        console.log(itemType, item);
         var parent = modelRelations[itemType].parent;
         $rootScope.$apply(function() {
             if (!parent) {
                info[resourceName(itemType)].push(item);
             } else {
-                /*var parentItem = _.findWhere(info[resourceName(parent)], {id: 2};
-
-                [resourceName(itemType)].push(item);*/
+                var parentItem = _.findWhere(info[resourceName(parent)], {id: item.parent});
+                parentItem[resourceName(itemType)].push(item);
             }
         });
     };
