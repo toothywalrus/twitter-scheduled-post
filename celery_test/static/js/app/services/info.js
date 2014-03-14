@@ -4,7 +4,6 @@ angular.module('Posting').factory('Info', function(Restangular, modelRelations, 
 
     var retrieve = function() {
         return Restangular.one('info').get().then(function(response) {
-            console.log(response);
             return info = response;
         });
     };
@@ -26,18 +25,17 @@ angular.module('Posting').factory('Info', function(Restangular, modelRelations, 
                 info[resourceName(parent)][resourceName(itemType)].push(item);
             }
         });
-    }
+    };
 
     var removeFromInfo = function(itemType, item) {
         var resource = resourceName(itemType);
         $rootScope.$apply(function() {
-            console.log(item);
             var elem =_.findWhere(info[resource], {id: item.id});
             info[resource] = _.without(info[resource], elem);
         });
     };
 
-    var add = function(itemType, item) {
+    var add = function(itemType, item, parentId) {
         var resource = resourceName(itemType);
         Restangular.all(resource).post(item).then(function(response) {
             //addToInfo(itemType, response);

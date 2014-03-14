@@ -15,19 +15,16 @@ window.angular.module('Posting').directive('listItem', function($compile, $http,
             element.html(html);
         }).then(function(response) {
             var newElem = $compile(element.html())(scope);
-            element.replaceWith(newElem);
+            element.children().replaceWith(newElem);
         });
-
-
     };
 
     var ctrl = function($scope) {
-        $scope.deleteItem = function() {
-        };
     };
 
     return {
-        restrict: 'EA',
+        restrict: 'E',
+        //tranclude: true,
         scope: {
             item: '=',
             type: '@'

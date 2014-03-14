@@ -5,7 +5,8 @@ window.angular.module('Posting').directive('dashboardSection', function(modelRel
     };
 
     var ctrl = function($scope) {
-        $scope.childModel = modelRelations[$scope.element].child;
+        console.log($scope.type);
+        $scope.childModel = modelRelations[$scope.type].child;
     };
 
     return {
@@ -15,7 +16,7 @@ window.angular.module('Posting').directive('dashboardSection', function(modelRel
         templateUrl: 'dashboardSection.html',
         scope: {
             list: '=',
-            element: '@'
+            type: '@'
         },
         link: linker,
         controller: ctrl

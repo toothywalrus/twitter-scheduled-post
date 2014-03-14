@@ -1,14 +1,14 @@
 <div class="col-md-6">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <span class="panel-title">{[{element|capitalize}]}</span>
-            <!-- <a href="#" class="pull-right" create-form model-name="{[{element}]}">Some text</a> -->
-            <button class="btn btn-default btn-xs pull-right" create-form model-name="{[{element}]}">Add</button>
+            <span class="panel-title">{[{type|capitalize}]}</span>
+            <span create-form class="glyphicon glyphicon-plus pull-right"></span>
         </div>
         <div class="panel-body">
             <div class="list-group">
-                <a create-form model-name="{[{childModel}]}" parent-id="{[{item.id}]}" class="list-group-item" ng-repeat="item in list">
-                    <list-item item="item" type="{[{element}]}"></list-item>
+                <a class="list-group-item" ng-repeat="item in list">
+                    <list-item item="item" type="{[{type}]}">
+                    </list-item>
                 </a>
             </div>
         </div>

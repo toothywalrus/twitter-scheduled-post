@@ -1,21 +1,18 @@
 'use strict';
 
-window.angular.module('Posting').directive('createForm', function(Restangular, modelRelations) {
+window.angular.module('Posting').directive('createForm', function(Restangular, modelRelations, Info) {
     var getTemplateName = function(modelName) {
         return modelName.toLowerCase() + '.html';
     };
-    var ctrl = function($scope, $modal, Info) {
+    var ctrl = function($scope, $modal) {
         $scope.open = function () {
-            var modelName = $scope.modelName;
+            var modelName = $scope.type;
             var templateUrl = getTemplateName(modelName);
-            var parentId = $scope.parentId;
             var parentType = modelRelations[modelName].parent;
             parentType = (parentType) ? (modelRelations[parentType].name || parentType) : (null);
 
-            var modalInstance = $modal.open({
+            $scope.modalInstance = $modal.open({
                 templateUrl: templateUrl,
-                resolve: {
-                },
                 controller: function($scope, $modalInstance, Info) {
                     $scope[modelName] = {};
                     $scope.info = Info.getAll();
@@ -30,23 +27,29 @@ window.angular.module('Posting').directive('createForm', function(Restangular, m
                     };
                 }
             });
-            modalInstance.result.then(function(result) {
-                console.log(result);
+
+            /*modalInstance.result.then(function(result) {
                 Info.add(modelName, result);
-            });
+            });*/
         };
     };
-    var linker = function(scope, element, attrs) {
+
+    var linker = function(scope, element, attrs, listItemCtrl) {
         element.bind('click', function() {
             scope.open();
+            scope.modalInstance.result.then(function(result) {
+                Info.add(scope.type, result);
+            });
+            console.log(scope);
         });
     };
+    
     return {
         restrict: 'EA',
-        replace: true,
-        scope: {
+        //require: '^listItem',
+        /*scope: {
             modelName: '@',
-        },
+        },*/
         controller: ctrl,
         link: linker
     };
