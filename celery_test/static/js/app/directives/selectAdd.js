@@ -7,7 +7,7 @@ angular.module('Posting').directive('selectAdd', function() {
         templateUrl: 'selectAdd.html',
         transclude: true,
         scope: {
-            modelName: '@',
+            type: '@modelName',
         }
     };
 });

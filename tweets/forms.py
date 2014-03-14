@@ -41,7 +41,7 @@ class NgSelectInput(forms.Select):
 
     def get_context_data(self):
 
-        self.attrs['ng-options'] = "obj.%s as obj.%s for obj in %s" % (
+        self.attrs['ng-options'] = 'obj.%s as obj.%s for obj in %s' % (
             self.value, self.text, self.items,)
         ctx = super(NgSelectInput, self).get_context_data()
         ctx.update({'model_name': self.model_name})

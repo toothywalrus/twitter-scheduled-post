@@ -17,12 +17,15 @@ angular.module('Posting').factory('Info', function(Restangular, modelRelations, 
     }
 
     var addToInfo = function(itemType, item) {
+        console.log(itemType, item);
         var parent = modelRelations[itemType].parent;
         $rootScope.$apply(function() {
             if (!parent) {
                info[resourceName(itemType)].push(item);
             } else {
-                info[resourceName(parent)][resourceName(itemType)].push(item);
+                /*var parentItem = _.findWhere(info[resourceName(parent)], {id: 2};
+
+                [resourceName(itemType)].push(item);*/
             }
         });
     };
@@ -35,7 +38,7 @@ angular.module('Posting').factory('Info', function(Restangular, modelRelations, 
         });
     };
 
-    var add = function(itemType, item, parentId) {
+    var add = function(itemType, item) {
         var resource = resourceName(itemType);
         Restangular.all(resource).post(item).then(function(response) {
             //addToInfo(itemType, response);
