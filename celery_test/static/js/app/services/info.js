@@ -29,26 +29,43 @@ angular.module('Posting').factory('Info', function(Restangular, modelRelations, 
     };
 
     var removeFromInfo = function(itemType, item) {
-        var resource = resourceName(itemType);
+
+        function getList() {
+            var parent = modelRelations[itemType].parent;
+
+            if (!parent) {
+                return info[resourceName(itemType)];
+            } else {
+                var mainList = info[resourceName(parent)];
+                var elem = _.findWhere(mainList, {id: item.parent});
+                var childList = elem[resourceName(itemType)];
+                return childList;
+            }
+        }
+
+        function getElem(list) {
+            console.log(list);
+            return _.findWhere(list, {id: item.id});
+        }
+
         $rootScope.$apply(function() {
-            var elem =_.findWhere(info[resource], {id: item.id});
-            info[resource] = _.without(info[resource], elem);
+            var list = getList();
+            var elem = getElem(list);
+            var index = _.indexOf(list, elem);
+            list.splice(index, 1);
         });
     };
 
     var add = function(itemType, item) {
         var resource = resourceName(itemType);
         Restangular.all(resource).post(item).then(function(response) {
-            //addToInfo(itemType, response);
             return response;
         });
     };
 
     var remove = function(itemType, item) {
         var resource = resourceName(itemType);
-        Restangular.one(resource, item.id).remove().then(function() {
-            //removeFromInfo(itemType, item);
-        });
+        Restangular.one(resource, item.id).remove();
     };
 
     return {

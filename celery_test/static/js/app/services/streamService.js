@@ -20,9 +20,10 @@ angular.module('Posting').factory('streamService', function(Info) {
 
     source.addEventListener('deleted', function(e) {
         var data = JSON.parse(e.data);
+        console.log('deleted');
         Info.removeFromInfo(data.model_name, data.item);
     });
-    
+
     return {
 
     };
