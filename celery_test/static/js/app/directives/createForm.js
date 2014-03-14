@@ -4,12 +4,14 @@ window.angular.module('Posting').directive('createForm', function(Restangular, m
     var getTemplateName = function(modelName) {
         return modelName.toLowerCase() + '.html';
     };
+
     var ctrl = function($scope, $modal) {
         $scope.open = function () {
-            var modelName = $scope.type;
+            var modelName = ($scope.list) ? $scope.type : modelRelations[$scope.type].child;
             var templateUrl = getTemplateName(modelName);
             var parentType = modelRelations[modelName].parent;
             parentType = (parentType) ? (modelRelations[parentType].name || parentType) : (null);
+            var parentId = ($scope.item) ? $scope.item.id : null;
 
             $scope.modalInstance = $modal.open({
                 templateUrl: templateUrl,
@@ -38,9 +40,9 @@ window.angular.module('Posting').directive('createForm', function(Restangular, m
         element.bind('click', function() {
             scope.open();
             scope.modalInstance.result.then(function(result) {
+                console.log(result);
                 Info.add(scope.type, result);
             });
-            console.log(scope);
         });
     };
     
