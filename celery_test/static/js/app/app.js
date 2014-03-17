@@ -33,6 +33,8 @@ Posting.config(function(RestangularProvider) {
 Posting.run(function($http, $cookies, $rootScope) {
     $http.defaults.headers.common['X-CSRFToken'] = $cookies['csrftoken'];
 
+    $rootScope.data = "";
+
 /*    var resolveDone = function () { $rootScope.doingResolve = false; };
  
     $rootScope.doingResolve = false;

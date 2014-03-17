@@ -5,7 +5,7 @@ window.angular.module('Posting').directive('dashboardSection', function(modelRel
     };
 
     var ctrl = function($scope) {
-        console.log($scope.type);
+        // console.log($scope.type);
         $scope.childModel = modelRelations[$scope.type].child;
     };
 

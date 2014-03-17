@@ -13,8 +13,16 @@ from djcelery.models import PeriodicTask, PeriodicTasks, IntervalSchedule
 from django_sse.redisqueue import send_event
 
 
-from .tasks import tweet, start_tweet_set
+from .tasks import post_timed_tweet, start_tweet_set
 import utils
+
+
+class TwitterUser(models.Model):
+    username = models.CharField()
+    consumer_key = models.CharField()
+    consumer_secret = models.CharField()
+    access_token_key = models.CharField()
+    access_token_secret = models.CharField()
 
 
 class TaskScheduler(PeriodicTask):
@@ -69,7 +77,7 @@ signals.pre_save.connect(PeriodicTasks.changed, sender=TaskScheduler)
 
 
 class Postable(models.Model):
-    already_posted = models.BooleanField(default=False)
+    already_posted = models.BooleanField(default=False, editable=False)
     # po st_time = models.DateTimeField()
 
     class Meta:
@@ -77,6 +85,11 @@ class Postable(models.Model):
 
 
 class LiveModel(models.Model):
+
+    """
+    Base class for all models, which should send events to client
+    about their updates
+    """
 
     def send_event(self, event):
         data = {}
@@ -88,8 +101,9 @@ class LiveModel(models.Model):
                    .render(data=data), channel="stream")
 
     def save(self, *args, **kwargs):
+        event = 'saved' if self.pk is None else 'changed'
         super(LiveModel, self).save(*args, **kwargs)
-        self.send_event('saved')
+        self.send_event(event)
 
     def delete(self, *args, **kwargs):
         self.send_event('deleted')
@@ -104,6 +118,7 @@ class Tweet(LiveModel):
     """
     Simple tweet model.
     """
+
     status = models.TextField(max_length=140)
     user = models.ForeignKey(get_user_model())
     created_on = models.DateTimeField(auto_now_add=True)
@@ -119,6 +134,7 @@ class PostTweetSet(LiveModel):
     posted every given period of time(periodic tweets).
     Must be started at given time (start_time field).
     """
+
     interval = models.ForeignKey(IntervalSchedule)
     description = models.CharField(max_length=200)
     start_time = models.DateTimeField()
@@ -159,10 +175,10 @@ class TimedTweet(LiveModel, Postable):
         return "Post '%s' at %s" % (self.tweet, self.post_time)
 
     def save(self, *args, **kwargs):
+        pk = self.pk
         super(TimedTweet, self).save(*args, **kwargs)
-
-        # Simply registering new task with 'eta'.
-        tweet.apply_async(args=[self.tweet.pk], eta=self.post_time)
+        if pk is None:
+            post_timed_tweet.apply_async(args=[self.pk], eta=self.post_time)
 
 
 class PeriodicTweet(LiveModel, Postable):

@@ -105,7 +105,7 @@ class PeriodicTweetForm(FormHelperMixin, NgModelFormMixin,
             'priority': forms.NumberInput,
             'tweet': NgSelectInput,
         }
-        fields = ('already_posted', 'priority', 'tweet', )
+        fields = ('priority', 'tweet', )
 
 
 class TimedTweetForm(FormHelperMixin, NgModelFormMixin,
@@ -114,6 +114,7 @@ class TimedTweetForm(FormHelperMixin, NgModelFormMixin,
     class Meta:
         model = TimedTweet
         widgets = {
-            'post_time': DateTimePicker,
+            # 'post_time': DateTimePicker,
+            'post_time': DateTimeLocalInput
         }
-        fields = ('post_time', 'already_posted',)
+        fields = ('post_time',)

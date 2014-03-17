@@ -35,12 +35,22 @@ def tweet(tweet_pk):
 
 
 @task
-def mark_posted(is_posted, ptweet_pk):
+def post_timed_tweet(ttweet_pk):
+    from .models import TimedTweet
+    ttweet = TimedTweet.objects.get(pk=ttweet_pk)
+    chain(tweet.s(ttweet.tweet.pk),
+          mark_posted.s(ttweet.pk, 'TimedTweet')).apply_async()
+
+
+@task
+def mark_posted(is_posted, pk, model_name):
     if is_posted:
-        from .models import PeriodicTweet
-        ptweet = PeriodicTweet.objects.get(pk=ptweet_pk)
-        ptweet.already_posted = True
-        ptweet.save()
+        import models
+        model = getattr(models, model_name)
+        inst = model.objects.get(pk=pk)
+        inst.already_posted = True
+        inst.save(update_fields=['already_posted'])
+        print 'mark posted'
 
 
 @task
@@ -50,11 +60,11 @@ def post_next_tweet(tweetset_pk):
     tries to post it using 'tweet' task.
     """
     from .models import PostTweetSet
-    s = PostTweetSet.objects.get(pk=tweetset_pk)
-    next_tweet = s.next_tweet()
+    tweetset = PostTweetSet.objects.get(pk=tweetset_pk)
+    next_tweet = tweetset.next_tweet()
     if next_tweet is not None:
         chain(tweet.s(next_tweet.tweet.pk),
-              mark_posted.s(next_tweet.pk)).apply_async()
+              mark_posted.s(next_tweet.pk, 'PeriodicTweet')).apply_async()
     else:
         print "nothing to post"
 

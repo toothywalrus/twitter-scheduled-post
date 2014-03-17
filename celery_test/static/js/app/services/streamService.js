@@ -24,6 +24,11 @@ angular.module('Posting').factory('streamService', function(Info) {
         Info.removeFromInfo(data.model_name, data.item);
     });
 
+    source.addEventListener('changed', function(e) {
+        var data = JSON.parse(e.data);
+        console.log('changed');
+    });
+
     return {
 
     };
