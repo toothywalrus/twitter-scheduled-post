@@ -17,12 +17,12 @@ from .tasks import post_timed_tweet, start_tweet_set
 import utils
 
 
-class TwitterUser(models.Model):
-    username = models.CharField()
-    consumer_key = models.CharField()
-    consumer_secret = models.CharField()
-    access_token_key = models.CharField()
-    access_token_secret = models.CharField()
+# class TwitterUser(models.Model):
+#     username = models.CharField()
+#     consumer_key = models.CharField()
+#     consumer_secret = models.CharField()
+#     access_token_key = models.CharField()
+#     access_token_secret = models.CharField()
 
 
 class TaskScheduler(PeriodicTask):

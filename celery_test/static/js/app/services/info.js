@@ -1,22 +1,24 @@
+'use strict';
+
 angular.module('Posting').factory('Info', function(Restangular, modelRelations, $rootScope) {
 
     var info = {};
 
-    var retrieve = function() {
+    function retrieve() {
         return Restangular.one('info').get().then(function(response) {
             return info = response;
         });
-    };
+    }
 
-    var getAll = function() {
+    function getAll() {
         return info;
     }
 
-    var resourceName = function(modelName) {
+    function resourceName (modelName) {
         return modelName.toLowerCase() + 's';
     }
 
-    var addToInfo = function(itemType, item) {
+    function addToInfo(itemType, item) {
         var parent = modelRelations[itemType].parent;
         $rootScope.$apply(function() {
             if (!parent) {
@@ -26,9 +28,9 @@ angular.module('Posting').factory('Info', function(Restangular, modelRelations, 
                 parentItem[resourceName(itemType)].push(item);
             }
         });
-    };
+    }
 
-    var removeFromInfo = function(itemType, item) {
+    function removeFromInfo(itemType, item) {
 
         function getList() {
             var parent = modelRelations[itemType].parent;
@@ -44,7 +46,6 @@ angular.module('Posting').factory('Info', function(Restangular, modelRelations, 
         }
 
         function getElem(list) {
-            console.log(list);
             return _.findWhere(list, {id: item.id});
         }
 
@@ -54,19 +55,23 @@ angular.module('Posting').factory('Info', function(Restangular, modelRelations, 
             var index = _.indexOf(list, elem);
             list.splice(index, 1);
         });
-    };
+    }
 
-    var add = function(itemType, item) {
+/*    function changeInfoItem(itemType, item) {
+        var elem = 
+    }*/
+
+    function add(itemType, item) {
         var resource = resourceName(itemType);
         Restangular.all(resource).post(item).then(function(response) {
             return response;
         });
-    };
+    }
 
-    var remove = function(itemType, item) {
+    function remove(itemType, item) {
         var resource = resourceName(itemType);
         Restangular.one(resource, item.id).remove();
-    };
+    }
 
     return {
         retrieve: retrieve,

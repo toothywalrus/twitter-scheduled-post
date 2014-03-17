@@ -83,10 +83,10 @@ class PostTweetSetViewSet(BaseViewSet):
 class InfoView(APIView):
 
     """
-    View for getting bulk of models information at once.
+    View for getting a bulk of models information at once.
     """
 
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
         info = {get_resource_name(model.__name__):

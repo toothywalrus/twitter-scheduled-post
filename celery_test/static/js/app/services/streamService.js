@@ -27,6 +27,7 @@ angular.module('Posting').factory('streamService', function(Info) {
     source.addEventListener('changed', function(e) {
         var data = JSON.parse(e.data);
         console.log('changed');
+        console.log(e.data);
     });
 
     return {
