@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="{{ STATIC_URL }}css/libs/angular.treeview.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/libs/ng-quick-date.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/libs/ng-quick-date-default-theme.css">
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
 
 {% if debug %}
 // This is the client-side way to compile less and an ok choice for local dev
@@ -65,7 +66,7 @@
 
 
     <div class="container"> 
-        <div class="content ng-cloak" ng-controller="{% block ng_controller %}AppController{% endblock %}">
+        <div class="content">
         {% block content %}
         {% endblock %}
         </div>

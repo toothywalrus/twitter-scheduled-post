@@ -1,12 +1,13 @@
 'use strict';
 
-window.angular.module('Posting').directive('dashboardSection', function(modelRelations) {
+window.angular.module('Posting').directive('dashboardSection', function(Info) {
     var linker = function(scope, element, attrs) {
     };
 
     var ctrl = function($scope) {
-        // console.log($scope.type);
-        $scope.childModel = modelRelations[$scope.type].child;
+        Info.getResourceByType($scope.type).then(function(resp) {
+            $scope.list = resp;
+        });
     };
 
     return {
@@ -15,7 +16,6 @@ window.angular.module('Posting').directive('dashboardSection', function(modelRel
         transclude: true,
         templateUrl: 'dashboardSection.html',
         scope: {
-            list: '=',
             type: '@'
         },
         link: linker,

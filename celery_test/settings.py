@@ -156,11 +156,11 @@ ROOT_URLCONF = 'celery_test.urls'
 #WSGI_APPLICATION = 'ws4redis.django_runserver.application'
 
 
-ANGULAR_TEMPLATES_DIR = os.path.join(STATICFILES_DIRS[0], 'js/app/views')
+# ANGULAR_TEMPLATES_DIR = os.path.join(STATICFILES_DIRS[0], 'js/app/views')
 
-ANGULAR_TEMPLATE_TEXT = 'html'
+# ANGULAR_TEMPLATE_TEXT = 'html'
 
-ANGULAR_TEMPLATE_EXCLUDE = ['list.html']
+# ANGULAR_TEMPLATE_EXCLUDE = ['list.html']
 
 
 TEMPLATE_DIRS = (
@@ -172,10 +172,10 @@ TEMPLATE_DIRS = (
 BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_ROOT, 'components')
 
 INSTALLED_APPS = (
-    'admin_tools',
-    'admin_tools.theming',
-    'admin_tools.menu',
-    'admin_tools.dashboard',
+    # 'admin_tools',
+    # 'admin_tools.theming',
+    # 'admin_tools.menu',
+    # 'admin_tools.dashboard',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -193,13 +193,13 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'celery_test',
     'djangular',
-    'django_nose',
+    # 'django_nose',
     'tweets',
     'crispy_forms',
     'floppyforms',
     'compressor',
-    'social.apps.django_app.default',
-    'corsheaders',
+    # 'social.apps.django_app.default',
+    # 'corsheaders',
 )
 
 REDIS_SSEQUEUE_CONNECTION_SETTINGS = {
@@ -207,20 +207,20 @@ REDIS_SSEQUEUE_CONNECTION_SETTINGS = {
     'db': 0,
 }
 
-BOWER_INSTALLED_APPS = (
-    'angular',
-    'angular-resource',
-    'underscore',
-    'bootstrap',
-)
+# BOWER_INSTALLED_APPS = (
+#     'angular',
+#     'angular-resource',
+#     'underscore',
+#     'bootstrap',
+# )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 # SESSION_ENGINE = 'redis_sessions.session'
 
-SOCKJS_CLASSES = (
-    'tweets.pollserver.PollConnection',
-)
+# SOCKJS_CLASSES = (
+#     'tweets.pollserver.PollConnection',
+# )
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
@@ -284,21 +284,21 @@ AUTHENTICATION_BACKENDS = (
 ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
-SOCIAL_AUTH_PIPELINE = (
-    'social.pipeline.social_auth.social_details',
-    'social.pipeline.social_auth.social_uid',
-    'social.pipeline.social_auth.auth_allowed',
-    'social.pipeline.social_auth.social_user',
-    'social.pipeline.user.get_username',
-    'social.pipeline.social_auth.associate_by_email',
-    'social.pipeline.user.create_user',
-    'social.pipeline.social_auth.associate_user',
-    'social.pipeline.social_auth.load_extra_data',
-    'social.pipeline.user.user_details'
-)
+# SOCIAL_AUTH_PIPELINE = (
+#     'social.pipeline.social_auth.social_details',
+#     'social.pipeline.social_auth.social_uid',
+#     'social.pipeline.social_auth.auth_allowed',
+#     'social.pipeline.social_auth.social_user',
+#     'social.pipeline.user.get_username',
+#     'social.pipeline.social_auth.associate_by_email',
+#     'social.pipeline.user.create_user',
+#     'social.pipeline.social_auth.associate_user',
+#     'social.pipeline.social_auth.load_extra_data',
+#     'social.pipeline.user.user_details'
+# )
 
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 #CORS_URLS_REGEX = r'^/api/.*$'
 # CORS_ALLOW_HEADERS = (
 #        'x-requested-with',
@@ -310,7 +310,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 #        'x-token'
 #    )
 
-SOCIAL_AUTH_FACEBOOK_KEY = '1476093182617620'
-SOCIAL_AUTH_FACEBOOK_SECRET = 'e860b4c7ce963989c6f6c5817f8ce455'
-SOCIAL_AUTH_FACEBOOK_SCOPE = [
-    'email', 'user_about_me', 'user_birthday', 'user_location']
+# SOCIAL_AUTH_FACEBOOK_KEY = '1476093182617620'
+# SOCIAL_AUTH_FACEBOOK_SECRET = 'e860b4c7ce963989c6f6c5817f8ce455'
+# SOCIAL_AUTH_FACEBOOK_SCOPE = [
+#     'email', 'user_about_me', 'user_birthday', 'user_location']

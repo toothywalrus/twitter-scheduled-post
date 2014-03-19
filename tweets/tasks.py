@@ -5,19 +5,22 @@ import twitter
 from .utils import get_api
 
 
-class BaseTwitterTask(Task):
-    abstract = True
+# class BaseTwitterTask(Task):
+#     abstract = True
 
-    _api = None
+#     _api = None
 
-    @property
-    def api(self):
-        if self._api is None:
-            self._api = get_api()
-        return self._api
+#     @property
+#     def api(self):
+#         if self._api is None:
+#             self._api = get_api()
+#         return self._api
+
+_api = get_api()
 
 
-@task(base=BaseTwitterTask)
+# @task(base=BaseTwitterTask)
+@task
 def tweet(tweet_pk):
     """
     Posts tweet with pk 'tweet_pk'. If everything is ok returns 'True',
@@ -26,7 +29,7 @@ def tweet(tweet_pk):
     from .models import Tweet
     tweet_to_post = Tweet.objects.get(pk=tweet_pk)
     try:
-        tweet.api.PostUpdate(tweet_to_post.status)
+        _api.PostUpdate(tweet_to_post.status)
         return True
     except twitter.TwitterError:
         print "error, this tweet will be deleted"

@@ -89,8 +89,9 @@ class InfoView(APIView):
     # permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
+        models_list = get_info_models()
         info = {get_resource_name(model.__name__):
                 get_serializer_class(model.__name__)(
                 model.objects.all(), many=True).data
-                for model in get_info_models()}
+                for model in models_list}
         return Response(info)

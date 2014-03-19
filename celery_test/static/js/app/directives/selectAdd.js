@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Posting').directive('selectAdd', function() {
+window.angular.module('Posting').directive('selectAdd', function() {
     return {
         restrict: 'E',
         replace: true,

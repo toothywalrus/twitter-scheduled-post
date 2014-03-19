@@ -2,12 +2,12 @@
     <span remove-item class="glyphicon glyphicon-remove pull-right"></span>
     <span create-form class="glyphicon glyphicon-plus pull-right"></span>
     <div class="info">
-        {[{ item.description }]}
-        <i>Start time: <b>{[{item.start_time|date:"dd.M.yy hh:m:s a"}]}</b></i>
+        <span>{[{ item.description }]}</span>
+        <i>Starting at: <b>{[{item.start_time|date:"dd.M.yy hh:m:s a"}]}</b></i>
     </div>
     <div class="controls">
     </div>
     <div class="children">
-        <list-item item="t" type="periodicTweet" ng-repeat="t in item.periodictweets"></list-item>
+        <list-item item="child" type="periodicTweet" ng-repeat="child in children"></list-item>
     </div>
 </div>

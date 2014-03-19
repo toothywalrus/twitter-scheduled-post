@@ -1,16 +1,25 @@
 'use strict';
 
-window.angular.module('Posting').directive('dashboard', function(Restangular) {
+window.angular.module('Posting').directive('dashboard', function(Restangular, $rootScope) {
     return {
         restrict: 'E',
         replace: true,
         transclude: true,
         templateUrl: 'dashboard.html',
         controller: function($scope, Info) {
-            $scope.$emit('info:start_load');
-            Info.retrieve().then(function() {
-                $scope.info = Info.getAll();
-                $scope.$emit('info:stop_load', {});
+            var watchAllChildren = function() {
+                window.angular.forEach(Info.getChildResources(), function(name) {
+                    $rootScope.$watchCollection('info.' + name, function() {
+                        $rootScope.info_change = !$rootScope.info_change;
+                    });
+                });
+            };
+            $rootScope.loading = true;
+            Info.retrieve().then(function(resp) {
+                $rootScope.info = resp;
+                $rootScope.info_change = false;
+                watchAllChildren();
+                $rootScope.loading = false;
             });
         }
     };

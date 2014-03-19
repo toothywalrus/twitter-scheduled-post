@@ -78,7 +78,7 @@ signals.pre_save.connect(PeriodicTasks.changed, sender=TaskScheduler)
 
 class Postable(models.Model):
     already_posted = models.BooleanField(default=False, editable=False)
-    # po st_time = models.DateTimeField()
+    # post_time = models.DateTimeField()
 
     class Meta:
         abstract = True
@@ -145,7 +145,7 @@ class PostTweetSet(LiveModel):
         If there is no such tweet, returns 'None'.
         """
         try:
-            nt = self.tweets.filter(
+            nt = self.periodictweets.filter(
                 already_posted=False).order_by('priority')[0]
         except IndexError:
             nt = None
@@ -187,7 +187,8 @@ class PeriodicTweet(LiveModel, Postable):
     Tweet that belongs to some set of tweets to post every period of time
     (PostTweetSet). Has its own priority in this set - 'priority'.
     """
-    tweetset = models.ForeignKey(PostTweetSet, related_name='tweets')
+    posttweetset = models.ForeignKey(
+        PostTweetSet, related_name='periodictweets')
     tweet = models.ForeignKey(Tweet)
     priority = models.IntegerField()
     posted_on = models.DateTimeField(editable=False, null=True)

@@ -1,6 +1,6 @@
 'use strict';
 
-window.angular.module('Posting').directive('createForm', function(Restangular, modelRelations, Info) {
+window.angular.module('Posting').directive('createForm', function(Restangular, Info) {
     var getTemplateName = function(modelName) {
         return modelName.toLowerCase() + '.html';
     };
@@ -8,7 +8,7 @@ window.angular.module('Posting').directive('createForm', function(Restangular, m
     var ctrl = function($scope, $modal) {
 
         function getModelName() {
-            return (!$scope.item) ? $scope.type : modelRelations[$scope.type].child;
+            return (!$scope.item) ? $scope.type : Info.getChild($scope.type);
         }
 
         function getParentId() {
@@ -24,7 +24,7 @@ window.angular.module('Posting').directive('createForm', function(Restangular, m
                 controller: function($scope, $modalInstance, Info) {
 
                     function setParentId() {
-                        var parentName = modelRelations.getParent(modelName);
+                        var parentName = Info.getParent(modelName);
                         var parentId = getParentId();
                         if (parentName) {
                             $scope[modelName][parentName] = parentId;
@@ -32,7 +32,9 @@ window.angular.module('Posting').directive('createForm', function(Restangular, m
                     }
 
                     $scope[modelName] = {};
-                    $scope.info = Info.getAll();
+                    Info.retrieve().then(function(resp) {
+                        $scope.info = resp;
+                    });
                     setParentId();
                     $scope.ok = function () {
                         $modalInstance.close($scope[modelName]);
@@ -44,6 +46,7 @@ window.angular.module('Posting').directive('createForm', function(Restangular, m
             });
 
             modalInstance.result.then(function(result) {
+                console.log(result);
                 Info.add(modelName, result);
             });
         };

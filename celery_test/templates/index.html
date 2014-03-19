@@ -3,15 +3,15 @@
 {% load experiment %}
 {% block content %}
 
-<dashboard>
-    <dashboard-section list="info.tweets" type="tweet"></dashboard-section>
-    <dashboard-section list="info.posttweetsets" type="postTweetSet"></dashboard-section>
-</dashboard>
+<div ng-view></div>
 
 {% endblock %}
 
 
 {% block partials %}
+    <script type="text/ng-template" id="main.html">
+        {% include "partials/main.html" %}
+    </script>
     <script type="text/ng-template" id="tweet.html">
         {% include "partials/modal.html" with form=tweet_form %}
     </script>

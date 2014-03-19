@@ -10,6 +10,7 @@ def get_api(consumer_key=settings.TWITTER_CONSUMER_KEY,
     """
     Returns an Api instance from 'twitter' module with given requivisites.
     """
+    print "api call"
     api = twitter.Api(
         consumer_key, consumer_secret, access_token_key, access_token_secret)
     return api
@@ -54,5 +55,6 @@ def get_info_models():
     """
     Returns list of models for using in InfoView etc.
     """
-    from .models import Tweet, PostTweetSet
-    return [Tweet, PostTweetSet]
+    from .models import Tweet, PostTweetSet, TimedTweet, PeriodicTweet
+
+    return [Tweet, TimedTweet, PostTweetSet, PeriodicTweet]

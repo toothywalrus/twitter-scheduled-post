@@ -1,5 +1,5 @@
 <div>
-    <span>{[{item.tweet.status}]} by {[{item.tweet.username}]}</span>
+    <span>{[{foreign.tweet.status }]} by {[{foreign.tweet.user.username}]}</span>
     <input type="checkbox" ng-disabled="true" ng-model="item.already_posted">
     <span>{[{item.posted_on|date:"dd.M.yy hh:m:s a"}]}</span>
     <span remove-item class="glyphicon glyphicon-remove pull-right"></span>
