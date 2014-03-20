@@ -2,15 +2,14 @@ from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
 
-from djcelery.models import IntervalSchedule
-
-from .models import Tweet, TimedTweet, PeriodicTweet, PostTweetSet
+from .models import Tweet, TimedTweet, PeriodicTweet, PostTweetSet,\
+    Interval
 
 
 class IntervalSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = IntervalSchedule
+        model = Interval
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -21,7 +20,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class TweetSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
 
     class Meta:
         model = Tweet

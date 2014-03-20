@@ -4,7 +4,6 @@ from datetime import datetime
 from django.db import models
 from django.db.models import signals
 
-from django.contrib.auth import get_user_model
 
 from rest_framework.renderers import UnicodeJSONRenderer
 
@@ -15,14 +14,6 @@ from django_sse.redisqueue import send_event
 
 from .tasks import post_timed_tweet, start_tweet_set
 import utils
-
-
-# class TwitterUser(models.Model):
-#     username = models.CharField()
-#     consumer_key = models.CharField()
-#     consumer_secret = models.CharField()
-#     access_token_key = models.CharField()
-#     access_token_secret = models.CharField()
 
 
 class TaskScheduler(PeriodicTask):
@@ -85,7 +76,7 @@ class Postable(models.Model):
         abstract = True
 
 
-class LiveModel(models.Model):
+class LiveMixin(object):
 
     """
     Base class for all models, which should send events to client
@@ -103,32 +94,47 @@ class LiveModel(models.Model):
 
     def save(self, *args, **kwargs):
         event = 'saved' if self.pk is None else 'changed'
-        super(LiveModel, self).save(*args, **kwargs)
+        super(LiveMixin, self).save(*args, **kwargs)
         self.send_event(event)
 
     def delete(self, *args, **kwargs):
         self.send_event('deleted')
-        super(LiveModel, self).delete(*args, **kwargs)
-
-    class Meta:
-        abstract = True
+        super(LiveMixin, self).delete(*args, **kwargs)
 
 
-class Tweet(LiveModel):
+class Interval(LiveMixin, IntervalSchedule):
+    pass
+
+
+class TwitterUser(models.Model):
+    username = models.CharField(max_length=30)
+    consumer_key = models.CharField(max_length=128)
+    consumer_secret = models.CharField(max_length=128)
+    access_token_key = models.CharField(max_length=128)
+    access_token_secret = models.CharField(max_length=128)
+
+    def get_api(self):
+        return utils.get_api(self.consumer_key, self.consumer_secret,
+                             self.access_token_key, self.access_token_secret)
+
+    def __unicode__(self):
+        return "%s" % self.username
+
+
+class Tweet(LiveMixin, models.Model):
 
     """
     Simple tweet model.
     """
 
-    status = models.TextField(max_length=140)
-    user = models.ForeignKey(get_user_model())
+    status = models.TextField(max_length=140, unique=True)
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
-        return "'%s' by %s" % (self.status, self.user)
+        return "'%s' at %s" % (self.status, self.created_on)
 
 
-class PostTweetSet(LiveModel):
+class PostTweetSet(LiveMixin, models.Model):
 
     """
     Represents some set of tweets which might be
@@ -142,6 +148,7 @@ class PostTweetSet(LiveModel):
     interval = models.ForeignKey(IntervalSchedule)
     description = models.CharField(max_length=200)
     start_time = models.DateTimeField()
+    users = models.ManyToManyField(TwitterUser, related_name='posttweetsets')
 
     periodic_task = models.OneToOneField(PeriodicTask, null=True, blank=True)
 
@@ -162,13 +169,13 @@ class PostTweetSet(LiveModel):
             super(PostTweetSet, self).save(*args, **kwargs)
             self.save(*args, **kwargs)
         else:
-            self.periodic_task = TaskScheduler.create(
+            periodic_task = TaskScheduler.create(
                 'tweets.tasks.post_next_tweet', self.interval.period,
                 self.interval.every, args="[" + '"%s"' % str(self.pk) + "]")
             PostTweetSet.objects.filter(pk=self.pk).update(
-                periodic_task=self.periodic_task)
+                periodic_task=periodic_task)
             start_tweet_set.apply_async(
-                args=[self.periodic_task.pk],
+                args=[periodic_task.pk],
                 eta=self.start_time)
 
     def delete(self, *args, **kwargs):
@@ -180,13 +187,15 @@ class PostTweetSet(LiveModel):
             (self.description, self.interval, self.start_time)
 
 
-class TimedTweet(LiveModel, Postable):
+class TimedTweet(LiveMixin, Postable):
 
     """
     Tweet that needs to be posted at specified time 'post_time'.
     """
     tweet = models.ForeignKey(Tweet, related_name='timedtweets')
     post_time = models.DateTimeField()
+    user = models.ForeignKey(
+        TwitterUser, related_name='timedtweets')
 
     def __unicode__(self):
         return "Post '%s' at %s" % (self.tweet, self.post_time)
@@ -195,10 +204,14 @@ class TimedTweet(LiveModel, Postable):
         pk = self.pk
         super(TimedTweet, self).save(*args, **kwargs)
         if pk is None:
-            post_timed_tweet.apply_async(args=[self.pk], eta=self.post_time)
+            post_timed_tweet.apply_async(
+                args=[self.pk, self.user.pk], eta=self.post_time)
+
+    class Meta:
+        unique_together = ('user', 'tweet',)
 
 
-class PeriodicTweet(LiveModel, Postable):
+class PeriodicTweet(LiveMixin, Postable):
 
     """
     Tweet that belongs to some set of tweets to post every period of time
@@ -212,3 +225,6 @@ class PeriodicTweet(LiveModel, Postable):
 
     def __unicode__(self):
         return '%s' % (self.tweet,)
+
+    class Meta:
+        unique_together = ('tweet', 'posttweetset',)

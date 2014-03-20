@@ -1,6 +1,7 @@
 from django.conf import settings
 
 import twitter
+import importlib
 
 
 def get_api(consumer_key=settings.TWITTER_CONSUMER_KEY,
@@ -26,7 +27,7 @@ def get_model_name(model_name):
 
 def get_resource_name(model_name):
     """
-    Returns name for the resource used in Restangular by the 'model_name'.
+    Returns name for the resource used in Restangularb y the 'model_name'.
     Actually is pluralized version of 'model_name'.
     """
     return "".join([model_name.lower(), "s"])
@@ -45,8 +46,9 @@ def get_serializer_class(model_name):
     Returns serializer class for model 'model_name'.
     """
     import serializers
-    import models as app_models
-    model = getattr(app_models, model_name)
+    module = importlib.import_module('tweets.models')
+    model = getattr(module, model_name)
+
     serializer_name = "".join([model.__name__, 'Serializer'])
     return getattr(serializers, serializer_name)
 
@@ -55,6 +57,8 @@ def get_info_models():
     """
     Returns list of models for using in InfoView etc.
     """
-    from .models import Tweet, PostTweetSet, TimedTweet, PeriodicTweet
+    from .models import Tweet, PostTweetSet, TimedTweet, PeriodicTweet,\
+        Interval
 
-    return [Tweet, TimedTweet, PostTweetSet, PeriodicTweet]
+    return [Tweet, TimedTweet, PostTweetSet, PeriodicTweet,
+            Interval]

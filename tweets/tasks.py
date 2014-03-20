@@ -16,30 +16,31 @@ from .utils import get_api
 #             self._api = get_api()
 #         return self._api
 
-_api = get_api()
-
 
 # @task(base=BaseTwitterTask)
 @task(throws=(twitter.TwitterError))
-def tweet(tweet_pk):
+def tweet(tweet_pk, user_pk):
     """
     Posts tweet with pk 'tweet_pk'. If everything is ok returns 'True',
     otherwise deletes tweet model and returns 'False'.
     """
-    from .models import Tweet
+    from .models import Tweet, TwitterUser
+    user = TwitterUser.objects.get(pk=user_pk)
+    api = user.get_api()
     tweet_to_post = Tweet.objects.get(pk=tweet_pk)
     try:
-        _api.PostUpdate(tweet_to_post.status)
+        api.PostUpdate(tweet_to_post.status)
         return True
     except twitter.TwitterError, ex:
         raise ex
 
 
 @task
-def post_timed_tweet(ttweet_pk):
+def post_timed_tweet(ttweet_pk, user_pk):
     from .models import TimedTweet
     ttweet = TimedTweet.objects.get(pk=ttweet_pk)
-    chain(tweet.s(ttweet.tweet.pk),
+
+    chain(tweet.s(ttweet.tweet.pk, user_pk),
           mark_posted.s(ttweet.pk, 'TimedTweet')).apply_async()
 
 
@@ -62,11 +63,10 @@ def post_next_tweet(tweetset_pk):
     """
     from .models import PostTweetSet
     try:
-        print tweetset_pk
         tweetset = PostTweetSet.objects.get(pk=tweetset_pk)
         next_tweet = tweetset.next_tweet()
         if next_tweet is not None:
-            chain(tweet.s(next_tweet.tweet.pk),
+            chain(tweet.s(next_tweet.tweet.pk, user_pk),
                   mark_posted.s(next_tweet.pk, 'PeriodicTweet')).apply_async()
         else:
             print "nothing to post"

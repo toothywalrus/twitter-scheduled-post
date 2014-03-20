@@ -4,14 +4,14 @@ from rest_framework import viewsets, generics, permissions
 from rest_framework.renderers import UnicodeJSONRenderer
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+
 
 from django_sse.redisqueue import send_event
 
 
-from .models import Tweet, TimedTweet, PeriodicTweet, PostTweetSet
+from .models import Tweet, TimedTweet, PeriodicTweet, PostTweetSet, Interval
 from .forms import TweetForm, PostTweetSetForm, PeriodicTweetForm, \
-    TimedTweetForm
+    TimedTweetForm, IntervalForm
 from .utils import get_resource_name, get_form_id, get_serializer_class,\
     get_info_models
 
@@ -27,7 +27,8 @@ class MainHomePage(TemplateView):
         context = super(MainHomePage, self).get_context_data(**kwargs)
 
         forms_list = [
-            TweetForm, PostTweetSetForm, PeriodicTweetForm, TimedTweetForm]
+            TweetForm, PostTweetSetForm, PeriodicTweetForm, TimedTweetForm,
+            IntervalForm]
         forms = dict((get_form_id(form()), form()) for form in forms_list)
         context.update(forms)
 
@@ -46,11 +47,7 @@ class ReadNestedWriteFlatMixin(object):
 
 
 class BaseViewSet(viewsets.ModelViewSet):
-
-    def post_save(self, obj, *args, **kwargs):
-        data = self.get_serializer(instance=obj).data
-        data.update({'resource_name': get_resource_name(self.model.__name__)})
-        send_event("info", UnicodeJSONRenderer().render(data=data))
+    pass
 
 
 class TweetViewSet(BaseViewSet):
@@ -78,6 +75,10 @@ class PeriodicTweetViewSet(BaseViewSet):
 
 class PostTweetSetViewSet(BaseViewSet):
     model = PostTweetSet
+
+
+class IntervalViewSet(BaseViewSet):
+    model = Interval
 
 
 class InfoView(APIView):

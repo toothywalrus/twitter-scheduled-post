@@ -25,6 +25,10 @@ window.angular.module('Posting').factory('Info', function(Restangular, $rootScop
         timedTweet: {
             child: null,
             parent: 'tweet'
+        },
+        interval: {
+            child: null,
+            parent: null
         }
     };
 
