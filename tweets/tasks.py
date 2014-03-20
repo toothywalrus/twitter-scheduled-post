@@ -64,10 +64,13 @@ def post_next_tweet(tweetset_pk):
     from .models import PostTweetSet
     try:
         tweetset = PostTweetSet.objects.get(pk=tweetset_pk)
+        users = tweetset.users.all()
+        print users
         next_tweet = tweetset.next_tweet()
         if next_tweet is not None:
-            chain(tweet.s(next_tweet.tweet.pk, user_pk),
-                  mark_posted.s(next_tweet.pk, 'PeriodicTweet')).apply_async()
+            for user in users:
+                chain(tweet.s(next_tweet.tweet.pk, user.pk), mark_posted.s(
+                    next_tweet.pk, 'PeriodicTweet')).apply_async()
         else:
             print "nothing to post"
     except PostTweetSet.DoesNotExist:
