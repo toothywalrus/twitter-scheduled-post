@@ -94,6 +94,7 @@ class PostTweetSetForm(
         widgets = {
             'start_time': DateTimePicker,
         }
+        fields = ('interval', 'description', 'start_time',)
 
 
 class PeriodicTweetForm(FormHelperMixin, NgModelFormMixin,

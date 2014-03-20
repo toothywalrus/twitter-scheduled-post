@@ -43,6 +43,7 @@ class PostTweetSetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PostTweetSet
+        fields = ('id', 'interval', 'description', 'start_time',)
 
 
 # class IntervalSerializer(serializers.ModelSerializer):

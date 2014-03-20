@@ -20,7 +20,7 @@ _api = get_api()
 
 
 # @task(base=BaseTwitterTask)
-@task
+@task(throws=(twitter.TwitterError))
 def tweet(tweet_pk):
     """
     Posts tweet with pk 'tweet_pk'. If everything is ok returns 'True',
@@ -31,10 +31,8 @@ def tweet(tweet_pk):
     try:
         _api.PostUpdate(tweet_to_post.status)
         return True
-    except twitter.TwitterError:
-        print "error, this tweet will be deleted"
-        tweet_to_post.delete()
-    return False
+    except twitter.TwitterError, ex:
+        raise ex
 
 
 @task
@@ -63,21 +61,21 @@ def post_next_tweet(tweetset_pk):
     tries to post it using 'tweet' task.
     """
     from .models import PostTweetSet
-    tweetset = PostTweetSet.objects.get(pk=tweetset_pk)
-    next_tweet = tweetset.next_tweet()
-    if next_tweet is not None:
-        chain(tweet.s(next_tweet.tweet.pk),
-              mark_posted.s(next_tweet.pk, 'PeriodicTweet')).apply_async()
-    else:
-        print "nothing to post"
+    try:
+        print tweetset_pk
+        tweetset = PostTweetSet.objects.get(pk=tweetset_pk)
+        next_tweet = tweetset.next_tweet()
+        if next_tweet is not None:
+            chain(tweet.s(next_tweet.tweet.pk),
+                  mark_posted.s(next_tweet.pk, 'PeriodicTweet')).apply_async()
+        else:
+            print "nothing to post"
+    except PostTweetSet.DoesNotExist:
+        pass
 
 
 @task
-def start_tweet_set(tweetset_pk, period, every):
-    """
-    Register PostTweetSet with pk 'tweetset_pk' in MQ using 'TaskScheduler'.
-    """
+def start_tweet_set(ts_pk):
     from .models import TaskScheduler
-    task = TaskScheduler.create('tweets.tasks.post_next_tweet', period, every,
-                                args="[" + '"%s"' % str(tweetset_pk) + "]")
-    task.start()
+    ts = TaskScheduler.objects.get(pk=ts_pk)
+    ts.start()

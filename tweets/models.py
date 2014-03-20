@@ -48,6 +48,7 @@ class TaskScheduler(PeriodicTask):
             period=period, every=every)
         ts = cls(name=periodic_task_name, task=task_name,
                  interval=interval, args=args, kwargs=kwargs, enabled=False)
+        ts.save()
         return ts
 
     def start(self):
@@ -135,9 +136,14 @@ class PostTweetSet(LiveModel):
     Must be started at given time (start_time field).
     """
 
+    def __init__(self, *args, **kwargs):
+        super(PostTweetSet, self).__init__(*args, **kwargs)
+
     interval = models.ForeignKey(IntervalSchedule)
     description = models.CharField(max_length=200)
     start_time = models.DateTimeField()
+
+    periodic_task = models.OneToOneField(PeriodicTask, null=True, blank=True)
 
     def next_tweet(self):
         """
@@ -152,11 +158,22 @@ class PostTweetSet(LiveModel):
         return nt
 
     def save(self, *args, **kwargs):
-        super(PostTweetSet, self).save(*args, **kwargs)
+        if self.pk is None:
+            super(PostTweetSet, self).save(*args, **kwargs)
+            self.save(*args, **kwargs)
+        else:
+            self.periodic_task = TaskScheduler.create(
+                'tweets.tasks.post_next_tweet', self.interval.period,
+                self.interval.every, args="[" + '"%s"' % str(self.pk) + "]")
+            PostTweetSet.objects.filter(pk=self.pk).update(
+                periodic_task=self.periodic_task)
+            start_tweet_set.apply_async(
+                args=[self.periodic_task.pk],
+                eta=self.start_time)
 
-        start_tweet_set.apply_async(
-            args=[self.pk, self.interval.period, self.interval.every],
-            eta=self.start_time)
+    def delete(self, *args, **kwargs):
+        self.periodic_task.delete()
+        super(PostTweetSet, self).delete(*args, **kwargs)
 
     def __unicode__(self):
         return "%s, %s, start time: %s" % \
