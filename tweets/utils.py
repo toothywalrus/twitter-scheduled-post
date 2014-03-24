@@ -126,7 +126,6 @@ def get_partials(exclude=None):
                 to_join = [filename]
             partial_id = ''.join(to_join)
             partials.append((partial_id, partial_url,))
-            print partial_id, '----', partial_url
     return partials
 
 
@@ -136,8 +135,10 @@ def is_posted(tweet_pk, user_pk):
 
 
 def mark_posted(tweet_pk, user_pk):
-    from .models import Post
-    Post.objects.create(tweet=tweet_pk, user=user_pk)
+    from .models import Post, Tweet, TwitterUser
+    tweet = Tweet.objects.get(pk=tweet_pk)
+    user = TwitterUser.objects.get(pk=user_pk)
+    Post.objects.create(tweet=tweet, user=user)
 
 
 def is_already_posted(tweet_pk, users_qs):

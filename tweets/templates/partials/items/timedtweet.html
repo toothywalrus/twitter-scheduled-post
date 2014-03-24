@@ -3,10 +3,6 @@
     <div class="info">
         <b>{[{item.post_time|date:"dd.M.yy hh:m:s a"}]}</b>
         <input type="checkbox" ng-disabled="true" ng-model="item.already_posted">
-        <div>
-            <span ng-repeat="user_id in item.users">
-                {[{ user_id }]}
-            </span>
-        </div>
+        {[{ item.users }]}
     </div>
 </div>

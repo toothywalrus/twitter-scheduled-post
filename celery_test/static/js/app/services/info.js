@@ -26,7 +26,7 @@ window.angular.module('Posting').factory('Info', function(Restangular, $rootScop
         timedTweet: {
             child: null,
             parent: 'tweet',
-            foreign: ['twitteruser']
+            foreignList: [{'users': 'twitteruser'},]
         },
         interval: {
             child: null,
@@ -126,6 +126,17 @@ window.angular.module('Posting').factory('Info', function(Restangular, $rootScop
         });
     }
 
+    function getForeignResourceSublist(main_item, ids, resourceType) {
+        return getResourceByType(resourceType).then(function(resp) {
+            var result = [];
+            for (var id in ids) {
+                var item = _.findWhere(resp, {id: id});
+                result.push(item);
+            }
+            return result;
+        });
+    }
+
     function addToInfo(itemType, item) {
         return getResourceByType(itemType).then(function(resp) {
             resp.push(item);
@@ -181,6 +192,7 @@ window.angular.module('Posting').factory('Info', function(Restangular, $rootScop
         getChild: getChild,
         getName: getName,
         getAllResources: getAllResources,
-        getChildResources: getChildResources
+        getChildResources: getChildResources,
+        getForeignResourceSublist: getForeignResourceSublist
     };
 });
