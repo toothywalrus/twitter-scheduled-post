@@ -41,9 +41,11 @@ class InfoView(APIView):
     """
 
     def get(self, request, format=None):
-        models_list = utils.get_info_models()
-        info = {utils.get_resource_name(model.__name__):
-                utils.get_serializer_class(model.__name__)(
-                model.objects.all(), many=True).data
-                for model in models_list}
+
+        info = {utils.get_resource_name(name):
+                utils.get_serializer_class(name)
+                (utils.get_model_class(name).objects.all(),
+                    many=True).data
+                for name in utils.get_info_names()}
+
         return Response(info)

@@ -1,7 +1,8 @@
 from django.contrib import admin
 
-from .models import Tweet, TimedTweet, PeriodicTweet, PostTweetSet,\
-    TwitterUser, Interval
+from .models import Tweet, TimedTweet
+
+import utils
 
 
 class TweetAdmin(admin.ModelAdmin):
@@ -13,7 +14,9 @@ class TimedTweetAdmin(admin.ModelAdmin):
 
 admin.site.register(Tweet, TweetAdmin)
 admin.site.register(TimedTweet, TimedTweetAdmin)
-admin.site.register(PeriodicTweet)
-admin.site.register(PostTweetSet)
-admin.site.register(TwitterUser)
-admin.site.register(Interval)
+
+for model in utils.get_info_models():
+    try:
+        admin.site.register(model)
+    except Exception:
+        pass

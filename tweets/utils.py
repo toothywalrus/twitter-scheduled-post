@@ -4,7 +4,6 @@ import os.path
 from django.conf import settings
 
 import twitter
-import importlib
 
 os.chdir(os.path.abspath('tweets/templates/partials'))
 
@@ -47,16 +46,22 @@ def get_form_id(form_class):
     return "%s_form" % (form_class._meta.model.__name__.lower(),)
 
 
+def get_model_class(model_name):
+    import models
+    return getattr(models, model_name)
+
+
+def get_serializer_name(model_name):
+    return ''.join([model_name, 'Serializer'])
+
+
 def get_serializer_class(model_name):
     """
     Returns serializer class for model 'model_name'.
     """
     import serializers
-    module = importlib.import_module('tweets.models')
-    model = getattr(module, model_name)
 
-    serializer_name = "".join([model.__name__, 'Serializer'])
-    return getattr(serializers, serializer_name)
+    return getattr(serializers, get_serializer_name(model_name))
 
 
 def get_viewset_class(model_name):
@@ -73,12 +78,8 @@ def get_viewset_name(model_name):
     return ''.join([model_name, 'ViewSet'])
 
 
-def get_model_class(model_name):
-    import models
-    return getattr(models, model_name)
-
-INFO_NAMES = ('Tweet', 'TimedTweet', 'PostTweetSet', 'PeriodicTweet',
-              'Interval', 'TwitterUser',)
+INFO_NAMES = ['Tweet', 'TimedTweet', 'PostTweetSet', 'PeriodicTweet',
+              'Interval', 'TwitterUser', ]
 
 
 def get_info_names():
