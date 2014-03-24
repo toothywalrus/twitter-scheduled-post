@@ -8,9 +8,9 @@ from crispy_forms.layout import Field
 from djangular.forms.angular_model import NgModelFormMixin
 from djangular.forms import NgFormValidationMixin
 
+import utils
 from .models import Tweet, PostTweetSet, PeriodicTweet, TimedTweet,\
-    Interval
-from .utils import get_model_name, get_form_id, get_resource_name
+    Interval, TwitterUser
 
 
 class DateTimeLocalInput(forms.DateTimeInput):
@@ -70,11 +70,11 @@ class TweetHelper(FormHelper):
 class FormHelperMixin(object):
 
     def __init__(self, *args, **kwargs):
-        scope_prefix = get_model_name(self._meta.model.__name__)
+        scope_prefix = utils.get_model_name(self._meta.model.__name__)
         kwargs.update({'scope_prefix': scope_prefix})
         super(FormHelperMixin, self).__init__(*args, **kwargs)
         self.helper = TweetHelper(form=self)
-        self.helper.form_id = get_form_id(self)
+        self.helper.form_id = utils.get_form_id(self)
 
 
 class TweetForm(FormHelperMixin, NgModelFormMixin, NgFormValidationMixin,
@@ -128,10 +128,26 @@ class TimedTweetForm(FormHelperMixin, NgModelFormMixin,
             # 'post_time': DateTimePicker,
             'post_time': DateTimeLocalInput
         }
-        fields = ('post_time', 'user',)
+        fields = ('post_time', 'users',)
+
+    def clean(self):
+        users = self.cleaned_data.get('users')
+        tweet = self.cleaned_data.get('tweet')
+        print users
+        print tweet
+        return self.cleaned_data
 
 
 class IntervalForm(FormHelperMixin, NgModelFormMixin, forms.ModelForm):
 
     class Meta:
         model = Interval
+        widgets = {
+            'every': forms.NumberInput
+        }
+
+
+class TwitterUserForm(FormHelperMixin, NgModelFormMixin, forms.ModelForm):
+
+    class Meta:
+        model = TwitterUser

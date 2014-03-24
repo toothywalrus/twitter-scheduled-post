@@ -28,7 +28,7 @@ class TaskScheduler(PeriodicTask):
     @classmethod
     def create(cls, task_name, period, every, args="[]", kwargs="{}"):
         """
-        Creates an instance of Djangular PerioicTask for task 'task_name'
+        Creates an instance of Djangular PeriodicTask for task 'task_name'
         with some interval('period', 'every').
         """
         periodic_task_name = "%s_%s" % (task_name, datetime.now())
@@ -67,7 +67,6 @@ signals.pre_save.connect(PeriodicTasks.changed, sender=TaskScheduler)
 
 class Postable(models.Model):
     already_posted = models.BooleanField(default=False, editable=False)
-    # post_time = models.DateTimeField()
 
     class Meta:
         abstract = True
@@ -105,6 +104,19 @@ class Tweet(LiveMixin, models.Model):
         return "'%s' at %s" % (self.status, self.created_on)
 
 
+class Post(models.Model):
+    tweet = models.ForeignKey(Tweet, related_name="posts")
+    user = models.ForeignKey(TwitterUser, related_name="posts")
+    posted_on = models.DateTimeField(editable=False, null=True)
+
+    def save(self, *args, **kwargs):
+        self.created_on = datetime.now()
+        super(Post, self).save()
+
+    class Meta:
+        unique_together = ('tweet', 'user',)
+
+
 class PostTweetSet(LiveMixin, models.Model):
 
     """
@@ -123,7 +135,7 @@ class PostTweetSet(LiveMixin, models.Model):
 
     periodic_task = models.OneToOneField(PeriodicTask, null=True, blank=True)
 
-    def next_tweet(self):
+    def next_periodic_tweet(self):
         """
         Selects next non-posted periodic tweet with lowest priority from set.
         If there is no such tweet, returns 'None'.
@@ -165,7 +177,7 @@ class TimedTweet(LiveMixin, Postable):
     """
     tweet = models.ForeignKey(Tweet, related_name='timedtweets')
     post_time = models.DateTimeField()
-    user = models.ForeignKey(
+    users = models.ManyToManyField(
         TwitterUser, related_name='timedtweets')
 
     def __unicode__(self):
@@ -176,10 +188,7 @@ class TimedTweet(LiveMixin, Postable):
         super(TimedTweet, self).save(*args, **kwargs)
         if pk is None:
             post_timed_tweet.apply_async(
-                args=[self.pk, self.user.pk], eta=self.post_time)
-
-    class Meta:
-        unique_together = ('user', 'tweet',)
+                args=[self.pk], eta=self.post_time)
 
 
 class PeriodicTweet(LiveMixin, Postable):
@@ -192,7 +201,6 @@ class PeriodicTweet(LiveMixin, Postable):
         PostTweetSet, related_name='periodictweets')
     tweet = models.ForeignKey(Tweet)
     priority = models.IntegerField()
-    posted_on = models.DateTimeField(editable=False, null=True)
 
     def __unicode__(self):
         return '%s' % (self.tweet,)

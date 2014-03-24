@@ -19,11 +19,13 @@ window.angular.module('Posting').directive('listItem', function(Info, $rootScope
         if (forList) {
             $scope.foreign = {};
             window.angular.forEach(forList, function(val) {
-                Info.getForeignResource(val, $scope.item[val]).then(function(resp) {
+                Info.getItemById(val, $scope.item[val]).then(function(resp) {
                     $scope.foreign[val] = resp;
                 });
             });
         }
+
+        $scope.info = $rootScope.info;
     };
 
     return {

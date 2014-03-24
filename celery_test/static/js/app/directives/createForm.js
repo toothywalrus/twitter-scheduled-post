@@ -2,7 +2,7 @@
 
 window.angular.module('Posting').directive('createForm', function(Restangular, Info) {
     var getTemplateName = function(modelName) {
-        return modelName.toLowerCase() + '.html';
+        return modelName.toLowerCase() + '_form.html';
     };
 
     var ctrl = function($scope, $modal) {

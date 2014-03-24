@@ -9,43 +9,17 @@
 
 
 {% block partials %}
-    <script type="text/ng-template" id="main.html">
-        {% include "partials/main.html" %}
-    </script>
-    <script type="text/ng-template" id="tweet.html">
-        {% include "partials/modal.html" with form=tweet_form %}
-    </script>
-    <script type="text/ng-template" id="posttweetset.html"> 
-        {% include "partials/modal.html" with form=posttweetset_form %}    
-    </script>
-    <script type="text/ng-template" id="periodictweet.html">
-        {% include "partials/modal.html" with form=periodictweet_form %}
-    </script>
-    <script type="text/ng-template" id="timedtweet.html">
-        {% include "partials/modal.html" with form=timedtweet_form %}
-    </script>
-    <script type="text/ng-template" id="interval.html">
-        {% include "partials/modal.html" with form=interval_form %}
-    </script>
-    <script type="text/ng-template" id="dashboard.html">
-        {% include "partials/dashboard.html" %}
-    </script>
-    <script type="text/ng-template" id="selectAdd.html">
-        {% include "partials/selectAdd.html" %}
-    </script>
-    <script type="text/ng-template" id="dashboardSection.html">
-        {% include "partials/dashboardSection.html" %}
-    </script>
-    <script type="text/ng-template" id="tweet-item.html">
-        {% include "partials/items/tweet-item.html" %}
-    </script>
-    <script type="text/ng-template" id="timedtweet-item.html">
-        {% include "partials/items/timedtweet-item.html" %}
-    </script>
-    <script type="text/ng-template" id="posttweetset-item.html">
-        {% include "partials/items/posttweetset-item.html" %}
-    </script>
-    <script type="text/ng-template" id="periodictweet-item.html">
-        {% include "partials/items/periodictweet-item.html" %}
-    </script>
+    
+    {% for form_id, form_inst in forms %}
+        <script type="text/ng-template" id="{{ form_id }}">
+            {% include "partials/modal.html" with form=form_inst %}
+        </script>
+    {% endfor %}
+    
+    {% for partial_id, partial_url in partials %}
+        <script type="text/ng-template" id="{{ partial_id }}">
+            {% include partial_url %}
+        </script>
+    {% endfor %}
+
 {% endblock partials %}

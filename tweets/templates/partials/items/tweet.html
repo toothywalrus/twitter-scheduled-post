@@ -1,0 +1,12 @@
+<div class="item">
+    <span remove-item class="glyphicon glyphicon-remove pull-right"></span>
+    <span create-form class="glyphicon glyphicon-plus pull-right"></span>
+    <div class="info">
+        <span>{[{ item.status }]}</span>
+    </div>
+    <div class="controls">
+    </div>
+    <div class="children">
+        <list-item type="timedTweet" item="child" ng-repeat="child in children"></list-item>
+    </div>
+</div>

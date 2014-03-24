@@ -29,6 +29,7 @@ djcelery.setup_loader()
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 CELERY_ALWAYS_EAGER = False
 BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
+CELERY_RESULT_BACKEND = 'djcelery.backends.database.DatabaseBackend'
 
 #BROKER_URL = 'amqp://walrus:0108@localhost:5672//'
 # BROKER_URL = 'redis://localhost:6379/0'
@@ -193,7 +194,7 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'celery_test',
     'djangular',
-    # 'django_nose',
+    'django_nose',
     'tweets',
     'crispy_forms',
     'floppyforms',

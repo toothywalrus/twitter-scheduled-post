@@ -15,7 +15,8 @@ window.angular.module('Posting').factory('Info', function(Restangular, $rootScop
         postTweetSet: {
             child: 'periodicTweet',
             parent: null,
-            name: 'posttweetset'
+            name: 'posttweetset',
+            foreign: ['interval']
         },
         periodicTweet: {
             child: null,
@@ -24,9 +25,14 @@ window.angular.module('Posting').factory('Info', function(Restangular, $rootScop
         },
         timedTweet: {
             child: null,
-            parent: 'tweet'
+            parent: 'tweet',
+            foreign: ['twitteruser']
         },
         interval: {
+            child: null,
+            parent: null
+        },
+        twitteruser: {
             child: null,
             parent: null
         }
@@ -87,6 +93,12 @@ window.angular.module('Posting').factory('Info', function(Restangular, $rootScop
     function getResourceByType(type) {
         return retrieve().then(function(resp) {
             return resp[getResourceName(type)];
+        });
+    }
+
+    function getItemById(type, id) {
+        return getResourceByType(type).then(function(resp) {
+            return _.findWhere(resp, {id: id});
         });
     }
 
@@ -163,6 +175,7 @@ window.angular.module('Posting').factory('Info', function(Restangular, $rootScop
         getForeignList: getForeignList,
         getChildren: getChildren,
         getParentItem: getParentItem,
+        getItemById: getItemById,
         getForeignResource: getForeignResource,
         getParent: getParent,
         getChild: getChild,
