@@ -1,13 +1,13 @@
 <div class="item">
-    <span remove-item class="glyphicon glyphicon-remove pull-right"></span>
-    <span create-form class="glyphicon glyphicon-plus pull-right"></span>
+    <div class="controls">
+        <span remove-item class="glyphicon glyphicon-remove pull-right"></span>
+        <span create-form class="glyphicon glyphicon-plus pull-right"></span>
+    </div>
     <div class="info">
         <span>{[{ item.description }]}</span>
         <i>Starting at: <b>{[{item.start_time|date:"dd.M.yy hh:m:s a"}]}</b></i>
         Post every <b>{[{ foreign.interval.every }]} {[{ foreign.interval.period }]}</b>
         <span>{[{ item.users }]}</span>
-    </div>
-    <div class="controls">
     </div>
     <div class="children">
         <list-item item="child" type="periodicTweet" ng-repeat="child in children"></list-item>
